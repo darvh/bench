@@ -17,7 +17,7 @@ unified harness covers their arms when needed — no duplication.
 
 Skills are NOT vendored. The recommended distribution channel is the **signal
 repo's installer** (`install.sh` / `bin/install.js`): one-line, agent-agnostic,
-installs `signal` + `plain` into each agent's skills dir (opencode,
+installs `signal` + `clarity` into each agent's skills dir (opencode,
 claude-code, codex, cursor, copilot, antigravity). The bench resolves the
 **host-installed copy** (the exact path a real agent loads) and passes it to
 harbor — so the bench measures the real install + distribution path. If the
@@ -34,7 +34,7 @@ MCP — reproducible on any machine with docker + harbor.
 | --- | --- | --- |
 | `naive` | — | baseline |
 | `signal` | `skills/signal` | efficacy: verify, reduce uncertainty |
-| `clarity` | `skills/plain` | communication |
+| `clarity` | `skills/clarity` | communication |
 | `signal+clarity` | both | the pair |
 | `context` | — (hint: context prepare) | discovery capsule |
 | `proof` | — (hint: proof verify) | verification strategy |
