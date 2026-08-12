@@ -1,0 +1,16 @@
+[
+  {
+    "arm": "signal",
+    "task": "crack-7z-hash",
+    "rep": "1",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "251092",
+    "cost_usd": "0.002647",
+    "wall": "777",
+    "task_ref": "",
+    "started": "2026-08-12T18:52:41.250Z",
+    "skill_sha": "sha256:2063dd2de5914f7d85eba9e1084e54efa7e50dcb8a11e653945ab335f901a74d",
+    "skill_source": "<home>/.cache/bench/skills/signal/signal"
+  }
+]

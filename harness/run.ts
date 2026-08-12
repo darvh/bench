@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
-import { ARMS, stageSkills, armSkillNames, armSkillRefs, type ArmName } from "../arms/arms";
+import { ARMS, stageSkills, armSkillNames, armSkillRefs, armSkillContent, type ArmName } from "../arms/arms";
 import { runCell, MODEL, VARIANT, PRICE_INPUT_MISS_PER_1M, PRICE_INPUT_HIT_PER_1M, PRICE_OUTPUT_PER_1M, type CellResult } from "./cell";
 
 /**
@@ -47,6 +47,10 @@ const dry = args.includes("--dry-run");
 const split = args.includes("--split");
 const skillsSrc = flag("--skills-src", "local"); // local (staged host install) | remote (git ref)
 const agentTimeoutMult = Number(flag("--agent-timeout-mult", "1.0"));
+const agent = (flag("--agent", "pi") === "opencode" ? "opencode" : "pi") as "opencode" | "pi";
+const probeSkills = args.includes("--probe-skills");
+const alwaysOn = flag("--mode", "skill") === "always-on"; // mount skill content as AGENTS.md
+const agPath = flag("--ag-path", datasetName.startsWith("swe-bench") ? "/testbed/AGENTS.md" : "/app/AGENTS.md");
 const out = flag("--out", path.join(REPO, "results"));
 // every invocation gets its own folder under jobs + results — nothing overwrites
 const runId = flag("--run-id", new Date().toISOString().replace(/[:.]/g, "-"));
@@ -83,7 +87,7 @@ if (split) {
     const log = path.join(JOBS_RUN, `${id}.log`);
     await fs.mkdir(path.dirname(log), { recursive: true });
     const child = Bun.spawn({
-      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, `--reps=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, `--dataset=${datasetName}`, `--task-prefix=${taskPrefix}`, `--agent-timeout-mult=${agentTimeoutMult}`, `--skills-src=${skillsSrc}`, ...(dry ? ["--dry-run"] : [])],
+      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, `--reps=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, `--dataset=${datasetName}`, `--task-prefix=${taskPrefix}`, `--agent-timeout-mult=${agentTimeoutMult}`, `--skills-src=${skillsSrc}`, `--agent=${agent}`, ...(alwaysOn ? [`--mode=always-on`, `--ag-path=${agPath}`] : []), ...(probeSkills ? ["--probe-skills"] : []), ...(dry ? ["--dry-run"] : [])],
       cwd: REPO,
       detached: true,
       stdout: Bun.file(log),
@@ -126,6 +130,27 @@ for (const c of cells) {
   const skillsInfo = skillsSrc === "remote" ? undefined : await stageSkills(c.arm, path.join(JOBS, "skills"));
   const skills = skillsSrc === "remote" ? armSkillRefs(c.arm) : skillsInfo?.dirs;
 
+  // always-on mode: mount the whole skill dir(s) into the task cwd + an
+  // AGENTS.md pointer (the agent reads them every session — no opt-in tool)
+  let alwaysOnCfg: NonNullable<Parameters<typeof runCell>[0]["alwaysOn"]> | undefined;
+  if (alwaysOn && skills) {
+    const cwd = path.dirname(agPath);
+    const mounts: { source: string; target: string }[] = [];
+    const refs: string[] = [];
+    for (const dir of skills) {
+      const name = path.basename(dir);
+      const target = path.posix.join(cwd, `.${name}`);
+      mounts.push({ source: dir, target });
+      refs.push(`.${name}/SKILL.md`);
+    }
+    const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
+    await fs.writeFile(
+      agFile,
+      `Follow the guidance in ${refs.join(" and ")} (including their fragments/ directories) for this task.\n`,
+    );
+    alwaysOnCfg = { mounts, agHostFile: agFile, agTarget: agPath };
+  }
+
   await register({ id, runId, task: c.task, arm: c.arm, pid: process.pid, outputLog: log, jobsDir });
   const hb = setInterval(() => heartbeat(id).catch(() => {}), 30_000);
   let res: CellResult;
@@ -135,12 +160,15 @@ for (const c of cells) {
       runId,
       arm: c.arm,
       task: c.task,
+      agent,
       jobsDir,
       log,
       apiKey: k,
       hint: arm.hint,
-      skills,
+      skills: alwaysOnCfg ? undefined : skills,
       skillNames: armSkillNames(c.arm),
+      probeSkills,
+      alwaysOn: alwaysOnCfg,
       datasetName,
       taskPrefix,
       agentTimeoutMult,

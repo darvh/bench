@@ -37,17 +37,52 @@ export interface CellOpts {
   runId: string;
   arm: ArmName;
   task: string;
+  agent: "opencode" | "pi";
   jobsDir: string;
   log: string;
   apiKey: string;
   hint?: string;
   skills?: string[];
   skillNames?: string[]; // which skill names the arm expects to be loaded
+  probeSkills?: boolean; // append "report the skills you see" to the instruction
+  alwaysOn?: {
+    mounts: { source: string; target: string }[]; // skill dir + AGENTS.md into the task cwd
+    agHostFile: string; // generated AGENTS.md (host path, mounted read-only)
+    agTarget: string;
+  };
   datasetName: string;
   taskPrefix: string; // e.g. "terminal-bench/" or "swe-bench/" for instance ids
   agentTimeoutMult: number; // multiplier on the task's agent timeout
   archiveRoot: string; // transcripts land in <archiveRoot>/transcripts/<runId>/<id>/<trial>/
   repoSessionsDir: string; // repo copy: <results>/<runId>/sessions/<id>/<trial>/
+}
+
+function transcriptName(agent: "opencode" | "pi"): string {
+  return agent === "pi" ? "pi.txt" : "opencode.txt";
+}
+function buildAgent(o: CellOpts): Record<string, unknown> {
+  if (o.agent === "pi") {
+    return {
+      name: "pi",
+      model_name: "opencode-go/deepseek-v4-flash",
+      ...(o.skills?.length ? { skills: o.skills } : {}),
+      env: { OPENCODE_API_KEY: o.apiKey },
+      kwargs: { thinking: "high" },
+    };
+  }
+  return {
+    name: "opencode",
+    model_name: MODEL,
+    ...(o.skills?.length ? { skills: o.skills } : {}),
+    kwargs: {
+      variant: VARIANT,
+      opencode_config: {
+        provider: {
+          "opencode-go": { options: { baseURL: GO_BASE_URL, apiKey: o.apiKey } },
+        },
+      },
+    },
+  };
 }
 
 export async function runCell(o: CellOpts): Promise<CellResult> {
@@ -68,22 +103,18 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     retry: { max_retries: 0 },
     quiet: true,
     agent_timeout_multiplier: o.agentTimeoutMult,
-    datasets: [{ name: o.datasetName, task_names: o.taskPrefix ? [`${o.taskPrefix}${o.task}`] : [o.task] }],
-    agents: [
-      {
-        name: "opencode",
-        model_name: MODEL,
-        ...(o.skills?.length ? { skills: o.skills } : {}),
-        kwargs: {
-          variant: VARIANT,
-          opencode_config: {
-            provider: {
-              "opencode-go": { options: { baseURL: GO_BASE_URL, apiKey: o.apiKey } },
-            },
+    ...(o.alwaysOn
+      ? {
+          environment: {
+            mounts: [
+              ...o.alwaysOn.mounts.map((m) => ({ type: "bind", source: m.source, target: m.target, read_only: true })),
+              { type: "bind", source: o.alwaysOn.agHostFile, target: o.alwaysOn.agTarget, read_only: true },
+            ],
           },
-        },
-      },
-    ],
+        }
+      : {}),
+    datasets: [{ name: o.datasetName, task_names: o.taskPrefix ? [`${o.taskPrefix}${o.task}`] : [o.task] }],
+    agents: [buildAgent(o)],
   };
   const cfgPath = path.join(o.jobsDir, "config.json");
   await writePrivate(cfgPath, JSON.stringify(cfg, null, 2));
@@ -95,23 +126,32 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     await writePrivate(cfgPath, JSON.stringify(cfg, null, 2));
   }
 
+  if (o.probeSkills) {
+    const probe = path.join(o.jobsDir, "probe-skills.md");
+    await writePrivate(probe, "Once, at the start: report the names of the skills available to you as tools. If none are available, reply NONE.");
+    cfg.extra_instruction_paths = [...(cfg.extra_instruction_paths as string[] ?? []), probe];
+    await writePrivate(cfgPath, JSON.stringify(cfg, null, 2));
+  }
+
   const t0 = Date.now();
   const p = Bun.spawn({
     cmd: ["harbor", "run", "--config", cfgPath],
     stdout: Bun.file(o.log),
     stderr: Bun.file(o.log),
+    // opencode/pi read the go key via their native provider env
+    env: { ...process.env, OPENCODE_API_KEY: o.apiKey },
   });
   // opencode occasionally hangs after finishing its turn (events stop, process
   // never exits) — the cell would otherwise burn the full agent timeout.
   // Watch the latest transcript: if it freezes for STALL_MS, kill the opencode
   // process inside the container so harbor's pipeline ends and the verifier runs.
   const STALL_MS = 300_000;
-  const poll = setInterval(() => stallWatch(o.jobsDir, o.task).catch(() => {}), 20_000);
+  const poll = setInterval(() => stallWatch(o.jobsDir, o.task, transcriptName(o.agent)).catch(() => {}), 20_000);
   // live-stream: harbor keeps the agent transcript inside the container until
   // the trial ends — poll docker cp into results/<runId>/live/<id>/ so every
   // command is visible from the repo in real time.
   const liveDir = path.join(o.repoSessionsDir, "..", "live", o.id);
-  const stream = setInterval(() => streamLive(o.task, liveDir).catch(() => {}), 10_000);
+  const stream = setInterval(() => streamLive(o.task, liveDir, transcriptName(o.agent)).catch(() => {}), 10_000);
   const code = await p.exited;
   clearInterval(poll);
   clearInterval(stream);
@@ -121,13 +161,13 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
   await scrubKeyInPlace(o.jobsDir, o.apiKey);
   await scrubKeyInPlace(o.log, o.apiKey);
 
-  await archiveTranscripts(o.jobsDir, path.join(o.archiveRoot, "transcripts", o.runId), o.id, true);
-  await archiveTranscripts(o.jobsDir, o.repoSessionsDir, o.id, false);
+  await archiveTranscripts(o.jobsDir, path.join(o.archiveRoot, "transcripts", o.runId), o.id, true, transcriptName(o.agent));
+  await archiveTranscripts(o.jobsDir, o.repoSessionsDir, o.id, false, transcriptName(o.agent));
 
   const verdict = await trialVerdict(o.jobsDir);
   const tokens = await jobTokens(o.jobsDir);
   const costUsd = await jobCostUsd(o.jobsDir);
-  const skillUsed = o.skillNames?.length ? await skillWasUsed(o.jobsDir, o.skillNames) : false;
+  const skillUsed = o.skillNames?.length ? await skillWasUsed(o.jobsDir, o.skillNames, transcriptName(o.agent)) : false;
   const taskRef = await jobTaskRef(o.jobsDir);
   const prov = await skillProvenance(o.jobsDir);
   return { ok: code === 0, verdict, tokens, costUsd, skillUsed, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source };
@@ -247,25 +287,25 @@ async function skillProvenance(jobsDir: string): Promise<{ sha: string; source: 
 // the same values the result rows are built from); trial.json = the per-trial
 // record (agent_result, exception_info); trajectory.json + opencode.txt =
 // the session.
-async function archiveTranscripts(jobsDir: string, archive: string, id: string, withTranscript: boolean): Promise<void> {
+async function archiveTranscripts(jobsDir: string, archive: string, id: string, withTranscript: boolean, transcriptFile = "opencode.txt"): Promise<void> {
   const jobResult = await jobResultPath(jobsDir);
   for (const dir of await trialDirs(jobsDir)) {
     const trialName = path.basename(dir);
-    const src = path.join(dir, "agent", "opencode.txt");
+    const src = path.join(dir, "agent", transcriptFile);
     if (!(await fs.access(src).then(() => true).catch(() => false))) continue;
     const dest = path.join(archive, id, trialName);
     await fs.mkdir(dest, { recursive: true });
-    if (withTranscript) await fs.copyFile(src, path.join(dest, "opencode.txt"));
+    if (withTranscript) await fs.copyFile(src, path.join(dest, transcriptFile));
     if (jobResult) await fs.copyFile(jobResult, path.join(dest, "result.json"));
     await fs.copyFile(path.join(dir, "result.json"), path.join(dest, "trial.json")).catch(() => {});
     await fs.copyFile(path.join(dir, "agent", "trajectory.json"), path.join(dest, "trajectory.json")).catch(() => {});
   }
 }
 
-async function skillWasUsed(jobsDir: string, names: string[]): Promise<boolean> {
+async function skillWasUsed(jobsDir: string, names: string[], transcriptFile: string): Promise<boolean> {
   for (const dir of await trialDirs(jobsDir)) {
     try {
-      const text = await fs.readFile(path.join(dir, "agent", "opencode.txt"), "utf8");
+      const text = await fs.readFile(path.join(dir, "agent", transcriptFile), "utf8");
       for (const name of names) {
         if (text.includes(`"tool":"skill"`) && text.includes(name)) return true;
         if (new RegExp(`"skill"[^}]*${name.replace("+", "\\+")}`, "i").test(text)) return true;
@@ -285,11 +325,11 @@ async function findContainer(task: string): Promise<string | null> {
 }
 
 // Copy the live agent transcript out of the container into the repo.
-async function streamLive(task: string, liveDir: string): Promise<void> {
+async function streamLive(task: string, liveDir: string, transcriptFile: string): Promise<void> {
   const c = await findContainer(task);
   if (!c) return;
   await fs.mkdir(liveDir, { recursive: true });
-  await Bun.$`docker cp ${c}:/logs/agent/opencode.txt ${liveDir}/opencode.txt`.quiet().catch(() => {});
+  await Bun.$`docker cp ${c}:/logs/agent/${transcriptFile} ${liveDir}/${transcriptFile}`.quiet().catch(() => {});
 }
 
 // ---- stall watchdog ----
@@ -298,7 +338,7 @@ async function streamLive(task: string, liveDir: string): Promise<void> {
 const stallState = new Map<string, { size: number; mtime: number; frozenAt: number }>();
 
 // Find the newest opencode.txt under jobsDir (recursive), its (size, mtime).
-async function transcriptStats(jobsDir: string): Promise<{ size: number; mtime: number } | null> {
+async function transcriptStats(jobsDir: string, transcriptFile: string): Promise<{ size: number; mtime: number } | null> {
   const found: { path: string; mtime: number }[] = [];
   const walk = async (d: string, depth: number): Promise<void> => {
     if (depth > 5) return;
@@ -306,7 +346,7 @@ async function transcriptStats(jobsDir: string): Promise<{ size: number; mtime: 
     for (const e of entries) {
       const p = path.join(d, e.name);
       if (e.isDirectory()) await walk(p, depth + 1);
-      else if (e.name === "opencode.txt") {
+      else if (e.name === transcriptFile) {
         const st = await fs.stat(p).catch(() => null);
         if (st) found.push({ path: p, mtime: st.mtimeMs });
       }
@@ -319,8 +359,8 @@ async function transcriptStats(jobsDir: string): Promise<{ size: number; mtime: 
   return st ? { size: st.size, mtime: st.mtimeMs } : null;
 }
 
-async function stallWatch(jobsDir: string, task: string): Promise<void> {
-  const st = await transcriptStats(jobsDir);
+async function stallWatch(jobsDir: string, task: string, transcriptFile: string): Promise<void> {
+  const st = await transcriptStats(jobsDir, transcriptFile);
   if (!st) return; // agent hasn't started yet — never stall during env/setup
   const prev = stallState.get(jobsDir) as { size: number; mtime: number; frozenAt: number } | undefined;
   if (!prev || prev.size !== st.size || prev.mtime !== st.mtime) {

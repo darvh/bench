@@ -123,6 +123,20 @@ export const ARMS: Record<ArmName, Arm> = {
   "caveman+ponytail": {},
 };
 
+// Read the arm's installed skill SKILL.md content (for always-on AGENTS.md injection).
+export async function armSkillContent(arm: ArmName): Promise<string> {
+  const info = await ensureArmSkills(arm);
+  if (!info) return "";
+  const parts: string[] = [];
+  for (const dir of info.dirs) {
+    const real = await fs.realpath(dir).catch(() => dir);
+    try {
+      parts.push(await fs.readFile(path.join(real, "SKILL.md"), "utf8"));
+    } catch {}
+  }
+  return parts.join("\n\n");
+}
+
 // Which installed skill names an arm expects the agent to load.
 export function armSkillNames(arm: ArmName): string[] {
   const names: Record<string, string[]> = {
