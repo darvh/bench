@@ -33,8 +33,8 @@ MCP — reproducible on any machine with docker + harbor.
 | --- | --- | --- |
 | `naive` | — | baseline |
 | `signal` | `skills/signal` | efficacy: verify, reduce uncertainty |
-| `plain` | `skills/plain` | communication |
-| `signal+plain` | both | the pair |
+| `clarity` | `skills/plain` | communication |
+| `signal+clarity` | both | the pair |
 | `context` | — (hint: context prepare) | discovery capsule |
 | `proof` | — (hint: proof verify) | verification strategy |
 

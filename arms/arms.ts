@@ -13,7 +13,7 @@ import path from "node:path";
 import { homedir } from "node:os";
 import { promises as fs } from "node:fs";
 
-export type ArmName = "naive" | "signal" | "plain" | "signal+plain";
+export type ArmName = "naive" | "signal" | "clarity" | "signal+clarity";
 
 export interface Arm {
   skills?: string[]; // skill dirs installed into the container (skill tool)
@@ -47,8 +47,8 @@ async function resolveSkill(name: string): Promise<string | null> {
 export async function ensureArmSkills(arm: ArmName): Promise<string[] | undefined> {
   const names: Record<string, string[]> = {
     signal: ["signal"],
-    plain: ["plain"],
-    "signal+plain": ["signal", "plain"],
+    clarity: ["clarity"],
+    "signal+clarity": ["signal", "clarity"],
   };
   const want = names[arm];
   if (!want) return undefined;
@@ -74,6 +74,6 @@ export async function ensureArmSkills(arm: ArmName): Promise<string[] | undefine
 export const ARMS: Record<ArmName, Arm> = {
   naive: {},
   signal: { hint: "Before making changes, use the Signal skill." },
-  plain: { hint: "Before responding, use the Plain skill." },
-  "signal+plain": { hint: "Before making changes, use the Signal skill, then the Plain skill." },
+  clarity: { hint: "Before responding, use the Clarity skill." },
+  "signal+clarity": { hint: "Before making changes, use the Signal skill, then the Clarity skill." },
 };
