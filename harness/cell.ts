@@ -35,15 +35,15 @@ export interface CellOpts {
   runId: string;
   arm: ArmName;
   task: string;
-  isLocal: boolean;
   jobsDir: string;
   log: string;
   apiKey: string;
   hint?: string;
   skills?: string[];
   skillNames?: string[]; // which skill names the arm expects to be loaded
-  tasksLocalDir: string;
   datasetName: string;
+  taskPrefix: string; // e.g. "terminal-bench/" or "swe-bench/" for instance ids
+  agentTimeoutMult: number; // multiplier on the task's agent timeout
   archiveRoot: string; // transcripts land in <archiveRoot>/transcripts/<runId>/<id>/<trial>/
   repoSessionsDir: string; // repo copy: <results>/<runId>/sessions/<id>/<trial>/
 }
@@ -65,9 +65,8 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     n_concurrent_trials: 1,
     retry: { max_retries: 0 },
     quiet: true,
-    ...(o.isLocal
-      ? { tasks: [{ path: path.join(o.tasksLocalDir, o.task) }] }
-      : { datasets: [{ name: o.datasetName, task_names: [`terminal-bench/${o.task}`] }] }),
+    agent_timeout_multiplier: o.agentTimeoutMult,
+    datasets: [{ name: o.datasetName, task_names: o.taskPrefix ? [`${o.taskPrefix}${o.task}`] : [o.task] }],
     agents: [
       {
         name: "opencode",
@@ -116,17 +115,6 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
   const skillUsed = o.skillNames?.length ? await skillWasUsed(o.jobsDir, o.skillNames) : false;
   const taskRef = await jobTaskRef(o.jobsDir);
   return { ok: code === 0, verdict, tokens, costUsd, skillUsed, taskRef, wallSec };
-}
-
-// Preflight for local starters: the unmodified starter MUST fail the verifier.
-export async function baselineVerdict(task: string, jobsBase: string, tasksLocalDir: string): Promise<string> {
-  const d = path.join(jobsBase, "baseline", task);
-  await fs.mkdir(d, { recursive: true });
-  await fs.cp(path.join(tasksLocalDir, task, "environment", "starter.py"), path.join(d, "starter.py"), { force: true });
-  await fs.cp(path.join(tasksLocalDir, task, "tests", "verify.py"), path.join(d, "verify.py"), { force: true });
-  const v = Bun.spawn({ cmd: ["python3", "verify.py"], cwd: d, stdout: "pipe", stderr: "pipe" });
-  const o = await new Response(v.stdout).text();
-  return /VERDICT=(\w+)/.exec(o)?.[1] ?? "error";
 }
 
 // ---- result.json discovery ----

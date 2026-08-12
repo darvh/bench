@@ -2,26 +2,25 @@ import { promises as fs } from "node:fs";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
-import { ARMS, stageSkills, armSkillNames, type ArmName } from "../arms/arms";
-import { runCell, baselineVerdict, MODEL, VARIANT, PRICE_INPUT_MISS_PER_1M, PRICE_INPUT_HIT_PER_1M, PRICE_OUTPUT_PER_1M, type CellResult } from "./cell";
+import { ARMS, stageSkills, armSkillNames, armSkillRefs, type ArmName } from "../arms/arms";
+import { runCell, MODEL, VARIANT, PRICE_INPUT_MISS_PER_1M, PRICE_INPUT_HIT_PER_1M, PRICE_OUTPUT_PER_1M, type CellResult } from "./cell";
 
 /**
  * Bench — universal docker + opencode benchmark driver.
  *
  * Every cell = one harbor job: docker image + containerized opencode +
- * official verifier. Arms differ ONLY by the installed skill + hint. Results
- * are the official task rewards; tokens/cost are provider-reported.
+ * official verifier. Arms differ ONLY by the installed skill. Results are
+ * the official task rewards; tokens/cost are provider-reported.
  *
- *   bun run harness/run.ts [--arms naive,signal] [--tasks tb21|local]
+ *   bun run harness/run.ts [--arms naive,signal] [--tasks tb21|<task>]
  *                          [--reps 1] [--split] [--dry-run] [--out DIR]
+ *                          [--skills-src local|remote]
  */
 
 const HERE = path.join(import.meta.dir);
 const REPO = path.join(HERE, "..");
-const TASKS_LOCAL = path.join(REPO, "tasks", "local");
 const TB21_DATASET = "terminal-bench/terminal-bench-2-1";
 const TB21_TASKS = ["crack-7z-hash", "cancel-async-tasks", "compile-compcert", "circuit-fibsqrt", "build-pmars"];
-const LOCAL_TASKS = ["sql_starter", "path_starter", "ratelimit_starter"];
 const CACHE = process.env.XDG_CACHE_HOME ?? path.join(homedir(), ".cache");
 const JOBS = path.join(CACHE, "bench");
 const ARCHIVE = process.env.BENCH_ARCHIVE ?? path.join(REPO, "..", "bench-archive");
@@ -36,18 +35,18 @@ function flag(name: string, dflt: string): string {
 }
 const arms = flag("--arms", "naive,signal").split(",") as ArmName[];
 const taskArg = flag("--tasks", "tb21");
-// tier from the value: "local"/"tb21", or a single known task name (split cells)
-const isLocal = taskArg === "local" || LOCAL_TASKS.includes(taskArg);
-const isTb = taskArg === "tb21" || TB21_TASKS.includes(taskArg);
-const taskScope = isLocal ? "local" : isTb ? "tb21" : taskArg;
-const taskList = isLocal
-  ? (taskArg === "local" ? LOCAL_TASKS : [taskArg])
-  : isTb
-    ? (taskArg === "tb21" ? TB21_TASKS : [taskArg])
-    : [taskArg];
+const datasetName = flag("--dataset", TB21_DATASET);
+// tb21 task names carry a "terminal-bench/" prefix in the dataset; swe-bench
+// instance ids are "swe-bench/django__django-11099".
+const taskPrefix = flag("--task-prefix", datasetName.startsWith("swe-bench") ? "swe-bench/" : "terminal-bench/");
+// tier from the value: "tb21" or a single known task name (split cells)
+const taskScope = taskArg === "tb21" || TB21_TASKS.includes(taskArg) ? "tb21" : taskArg;
+const taskList = taskArg === "tb21" ? TB21_TASKS : [taskArg];
 const reps = Number(flag("--reps", "2"));
 const dry = args.includes("--dry-run");
 const split = args.includes("--split");
+const skillsSrc = flag("--skills-src", "local"); // local (staged host install) | remote (git ref)
+const agentTimeoutMult = Number(flag("--agent-timeout-mult", "1.0"));
 const out = flag("--out", path.join(REPO, "results"));
 // every invocation gets its own folder under jobs + results — nothing overwrites
 const runId = flag("--run-id", new Date().toISOString().replace(/[:.]/g, "-"));
@@ -116,16 +115,16 @@ for (const c of cells) {
     continue;
   }
 
-  // baseline: unmodified local starter must fail its adversarial verifier
-  const baseline = isLocal ? await baselineVerdict(c.task, JOBS, TASKS_LOCAL) : "n/a";
   if (dry) {
-    console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} baseline=${baseline} dry`);
+    console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} dry`);
     continue;
   }
 
   const arm = ARMS[c.arm];
-  const skillsInfo = await stageSkills(c.arm, path.join(JOBS, "skills")); // harbor-safe staging
-  const skills = skillsInfo?.dirs;
+  // skills source: staged host install (default) or remote git ref (harbor
+  // resolves org/name or tree URL, sparse-checkout into cache)
+  const skillsInfo = skillsSrc === "remote" ? undefined : await stageSkills(c.arm, path.join(JOBS, "skills"));
+  const skills = skillsSrc === "remote" ? armSkillRefs(c.arm) : skillsInfo?.dirs;
 
   await register({ id, runId, task: c.task, arm: c.arm, pid: process.pid, outputLog: log, jobsDir });
   const hb = setInterval(() => heartbeat(id).catch(() => {}), 30_000);
@@ -136,15 +135,15 @@ for (const c of cells) {
       runId,
       arm: c.arm,
       task: c.task,
-      isLocal,
       jobsDir,
       log,
       apiKey: k,
       hint: arm.hint,
       skills,
       skillNames: armSkillNames(c.arm),
-      tasksLocalDir: TASKS_LOCAL,
-      datasetName: TB21_DATASET,
+      datasetName,
+      taskPrefix,
+      agentTimeoutMult,
       archiveRoot: ARCHIVE,
       repoSessionsDir: path.join(outRun, "sessions"),
     });
@@ -155,12 +154,12 @@ for (const c of cells) {
   await setStatus(id, res.ok ? "done" : "error");
 
   rows.push({
-    arm: c.arm, task: c.task, rep: String(c.rep), baseline, verdict: res.verdict,
+    arm: c.arm, task: c.task, rep: String(c.rep), verdict: res.verdict,
     skill_used: String(res.skillUsed), tokens: String(res.tokens), cost_usd: String(res.costUsd),
     wall: String(res.wallSec), task_ref: res.taskRef, started: startedAt,
     skill_sha: skillsInfo?.sourceSha ?? "",
   });
-  console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} baseline=${baseline} verdict=${res.verdict} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
+  console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} verdict=${res.verdict} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
 }
 
 await fs.mkdir(outRun, { recursive: true });

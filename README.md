@@ -1,14 +1,12 @@
 # bench
 
-<<<<<<< HEAD
 Single home for every product's benchmark. Product repos stay clean (skills,
 CLI, hooks); all harness, arms, fixtures, and results live here.
 
 ```text
-arms/       arm registry (naive, signal, clarity, signal+clarity; context/proof added later via the same registry)
+arms/       arm registry (naive, signal, clarity, signal+clarity, caveman, ponytail, and pairs)
 harness/    one driver (harbor + docker + opencode + monitor + security)
-tasks/      local adversarial starter tasks (sql, path, ratelimit)
-results/    per-product results (<scope>.json)
+results/    per-run results (<runId>/tb21.json + sessions + trajectory.html)
 ```
 
 Context and proof bench records moved out to `../bench-archive/` for now; the
@@ -39,8 +37,9 @@ machine with docker + harbor.
 | `signal` | `skills/signal` | efficacy + autonomous adoption |
 | `clarity` | `skills/clarity` | communication + autonomous adoption |
 | `signal+clarity` | both | the pair |
-| `context` | — | discovery capsule |
-| `proof` | — | verification strategy |
+| `caveman` | `skills/caveman` | terse-prose control |
+| `ponytail` | `skills/ponytail` | minimal-code control |
+| `caveman+ponytail` | both | the pair |
 
 Skills are NOT vendored: each cell resolves the host-installed copy (the exact
 path a real agent loads) and stages it into the container under its proper
@@ -48,28 +47,28 @@ path a real agent loads) and stages it into the container under its proper
 
 ## Tasks
 
-- `tb21` — the official Terminal-Bench 2.1 subset (5 tasks) via the dataset.
-- `local` — adversarial starter tasks (sql injection, path traversal, rate
-  limit) with a baseline check: the unmodified starter MUST fail the verifier.
+- `tb21` — the official Terminal-Bench 2.1 subset (5 tasks) via the dataset
+  (`crack-7z-hash`, `cancel-async-tasks`, `compile-compcert`, `circuit-fibsqrt`,
+  `build-pmars`).
+- Any single task name from the dataset, e.g. `--tasks crack-7z-hash`.
 
 ## Run
 
 ```text
 bun run harness/run.ts --arms naive,signal --tasks tb21 --reps 1 --split
-bun run harness/run.ts --arms naive,signal --tasks local --reps 3 --split
-bun run harness/monitor.ts status | stop <id|all> | watch <id>
+bun run harness/run.ts --arms naive,signal --tasks crack-7z-hash --reps 3
+bun run harness/monitor.ts status | stop <id|all> | watch <id> | done
 bun run harness/monitor-agent.ts            # watchdog: auto-stop stalls
 ```
 
 Security: jobs + keys live in the OS cache; the apiKey is scrubbed in place
-after every run; results in `results/<scope>.json`; nothing is ever uploaded.
+after every run; results in `results/<runId>/`; nothing is ever uploaded.
 Per-run monitor state = one file per run (no shared-state races).
 
 ## Metrics per cell
 
-`baseline` (starter must fail), `verdict` (official reward), `skill_used`
-(proof from the session transcript that the skill was actually read),
-`tokens`, `wall`.
-=======
-Comprehensive benchmark for Darvh agent skills: one harness (docker + opencode), arms registry, TB2.1 + local tasks. Work happens on feature branches; main is the merge target.
->>>>>>> main
+`verdict` (official reward), `skill_used` (proof from the session transcript
+that the skill was actually loaded), `tokens`, `cost_usd` (at the DeepSeek V4
+Flash price schedule), `wall`. Sessions (trajectory + results) land in
+`results/<runId>/sessions/` and `harness/session.ts` prints the per-step view;
+`harness/viz.ts` renders a local HTML timeline.

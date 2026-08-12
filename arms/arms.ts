@@ -14,7 +14,7 @@ import path from "node:path";
 import { homedir } from "node:os";
 import { promises as fs } from "node:fs";
 
-export type ArmName = "naive" | "signal" | "clarity" | "signal+clarity";
+export type ArmName = "naive" | "signal" | "clarity" | "signal+clarity" | "caveman" | "ponytail" | "caveman+ponytail";
 
 export interface Arm {
   skills?: string[]; // skill dirs installed into the container (skill tool)
@@ -87,6 +87,9 @@ export async function ensureArmSkills(arm: ArmName): Promise<ArmSkills | undefin
     signal: ["signal"],
     clarity: ["clarity"],
     "signal+clarity": ["signal", "clarity"],
+    caveman: ["caveman"],
+    ponytail: ["ponytail"],
+    "caveman+ponytail": ["caveman", "ponytail"],
   };
   const want = names[arm];
   if (!want) return undefined;
@@ -115,6 +118,9 @@ export const ARMS: Record<ArmName, Arm> = {
   signal: {},
   clarity: {},
   "signal+clarity": {},
+  caveman: {},
+  ponytail: {},
+  "caveman+ponytail": {},
 };
 
 // Which installed skill names an arm expects the agent to load.
@@ -123,6 +129,21 @@ export function armSkillNames(arm: ArmName): string[] {
     signal: ["signal"],
     clarity: ["clarity"],
     "signal+clarity": ["signal", "clarity"],
+    caveman: ["caveman"],
+    ponytail: ["ponytail"],
+    "caveman+ponytail": ["caveman", "ponytail"],
   };
   return names[arm] ?? [];
+}
+
+// Remote git skill sources for the same arms: harbor resolves org/name or a
+// tree URL, sparse-checkouts into cache, and mounts the skill dir.
+export function armSkillRefs(arm: ArmName, ref = "main"): string[] {
+  const base = (name: string) => `https://github.com/darvh/signal/tree/${ref}/${name}`;
+  const refs: Record<string, string[]> = {
+    signal: [base("signal")],
+    clarity: [base("clarity")],
+    "signal+clarity": [base("signal"), base("clarity")],
+  };
+  return refs[arm] ?? [];
 }
