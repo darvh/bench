@@ -1,9 +1,14 @@
 name: ci
+# Only main auto-triggers workflows; feature branches never do.
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   typecheck:
@@ -12,4 +17,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - name: typecheck harness + arms
-        run: bunx tsc --noEmit harness/run.ts arms/arms.ts --module esnext --target esnext --moduleResolution bundler --types bun --skipLibCheck
+        run: |
+          bun add -d @types/bun
+          bunx tsc --noEmit harness/run.ts arms/arms.ts --module esnext --target esnext --moduleResolution bundler --skipLibCheck
