@@ -1,0 +1,15 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: typecheck harness + arms
+        run: bunx tsc --noEmit harness/run.ts arms/arms.ts --module esnext --target esnext --moduleResolution bundler --types bun --skipLibCheck

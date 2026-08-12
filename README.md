@@ -1,5 +1,6 @@
-# Bench — comprehensive benchmark for Darvh agent skills
+# bench
 
+<<<<<<< HEAD
 Single home for every product's benchmark. Product repos stay clean (skills,
 CLI, hooks); all harness, arms, fixtures, and results live here.
 
@@ -66,3 +67,6 @@ Per-run monitor state = one file per run (no shared-state races).
 `baseline` (starter must fail), `verdict` (official reward), `skill_used`
 (proof from the session transcript that the skill was actually read),
 `tokens`, `wall`.
+=======
+Comprehensive benchmark for Darvh agent skills: one harness (docker + opencode), arms registry, TB2.1 + local tasks. Work happens on feature branches; main is the merge target.
+>>>>>>> main
