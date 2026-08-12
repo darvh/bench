@@ -1,0 +1,102 @@
+[
+  {
+    "arm": "signal",
+    "task": "crack-7z-hash",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "20"
+  },
+  {
+    "arm": "signal",
+    "task": "crack-7z-hash",
+    "rep": "2",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "22"
+  },
+  {
+    "arm": "signal",
+    "task": "cancel-async-tasks",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "15"
+  },
+  {
+    "arm": "signal",
+    "task": "cancel-async-tasks",
+    "rep": "2",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "13"
+  },
+  {
+    "arm": "signal",
+    "task": "compile-compcert",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "12"
+  },
+  {
+    "arm": "signal",
+    "task": "compile-compcert",
+    "rep": "2",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "8"
+  },
+  {
+    "arm": "signal",
+    "task": "circuit-fibsqrt",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "9"
+  },
+  {
+    "arm": "signal",
+    "task": "circuit-fibsqrt",
+    "rep": "2",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "9"
+  },
+  {
+    "arm": "signal",
+    "task": "build-pmars",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "6"
+  },
+  {
+    "arm": "signal",
+    "task": "build-pmars",
+    "rep": "2",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "7"
+  }
+]

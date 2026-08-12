@@ -1,0 +1,1 @@
+     stop <id|all> | stop <id|all> | watch <id>\nstate: ${STATE_FILE}`);
