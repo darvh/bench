@@ -1,102 +1,102 @@
 [
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "crack-7z-hash",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "111"
+    "wall": "19"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "crack-7z-hash",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "22"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "cancel-async-tasks",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "15"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "cancel-async-tasks",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "13"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "compile-compcert",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "10"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "compile-compcert",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "12"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "circuit-fibsqrt",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "9"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "circuit-fibsqrt",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "8"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "build-pmars",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "7"
   },
   {
-    "arm": "signal",
+    "arm": "naive",
     "task": "build-pmars",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "5"
+    "wall": "6"
   }
 ]

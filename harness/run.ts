@@ -36,7 +36,7 @@ function flag(name: string, dflt: string): string {
 }
 const arms = flag("--arms", "naive,signal").split(",") as ArmName[];
 const taskScope = flag("--tasks", "tb21");
-const reps = Number(flag("--reps", "1"));
+const reps = Number(flag("--reps", "2"));
 const dry = args.includes("--dry-run");
 const split = args.includes("--split");
 const out = flag("--out", path.join(REPO, "results"));
@@ -65,6 +65,31 @@ async function scrubKeyInPlace(dir: string, k: string): Promise<void> {
       }
     }
   }
+}
+
+const startedAt = new Date().toISOString();
+
+async function gitSha(dir: string): Promise<string> {
+  try {
+    const p = Bun.spawn({ cmd: ["git", "-C", dir, "rev-parse", "HEAD"], stdout: "pipe", stderr: "pipe" });
+    const o = await new Response(p.stdout).text();
+    await p.exited;
+    return o.trim();
+  } catch {
+    return "";
+  }
+}
+
+async function jobTaskRef(jobsDir: string): Promise<string> {
+  const files = await fs.readdir(jobsDir).catch(() => []);
+  for (const f of files) {
+    try {
+      const d = JSON.parse(await fs.readFile(path.join(jobsDir, f, "result.json"), "utf8"));
+      const ref = d.task_id?.ref ?? d.config?.task?.ref;
+      if (ref) return ref;
+    } catch {}
+  }
+  return "";
 }
 
 const cells: { arm: ArmName; task: string; rep: number }[] = [];
@@ -109,7 +134,8 @@ for (const c of cells) {
   }
 
   const arm = ARMS[c.arm];
-  const skills = await ensureArmSkills(c.arm); // real host install path
+  const skillsInfo = await ensureArmSkills(c.arm); // real host install path
+  const skills = skillsInfo?.dirs;
   const cfg: Record<string, unknown> = {
     job_name: `bench-${id}`,
     jobs_dir: jobsDir,
@@ -159,14 +185,38 @@ for (const c of cells) {
   const verdict = taskScope === "local" ? await trialVerdict(jobsDir) : await tbVerdict(jobsDir);
   const tokens = await jobTokens(jobsDir);
   const skillUsed = skills?.length ? await skillWasUsed(jobsDir, c.arm) : false;
-  rows.push({ arm: c.arm, task: c.task, rep: String(c.rep), baseline, verdict, skill_used: String(skillUsed), tokens: String(tokens), wall: String(wallSec) });
+  const taskRef = await jobTaskRef(jobsDir);
+  rows.push({
+    arm: c.arm, task: c.task, rep: String(c.rep), baseline, verdict, skill_used: String(skillUsed),
+    tokens: String(tokens), wall: String(wallSec), task_ref: taskRef,
+    started: startedAt, skill_sha: skillsInfo?.sourceSha ?? null, config: cfgPath,
+  });
   console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} baseline=${baseline} verdict=${verdict} skill_used=${skillUsed} ${tokens} tok ${wallSec}s`);
 }
 
 await fs.mkdir(out, { recursive: true });
 const file = path.join(out, `${taskScope}.json`);
 await fs.writeFile(file, JSON.stringify(rows, null, 2));
+// provenance: model, arms, skill revisions, task refs, timing — everything
+// needed to reproduce or audit the run.
+const provenance = {
+  scope: taskScope,
+  model: MODEL,
+  variant: VARIANT,
+  arms,
+  taskList,
+  reps,
+  startedAt,
+  finishedAt: new Date().toISOString(),
+  harness: `darvh/bench@${(await gitSha(path.join(REPO))).slice(0, 12)}`,
+  skillSource: "github.com/darvh/signal (install.sh distribution path)",
+  skillSha: rows[0]?.skill_sha ?? null,
+  cells: rows.length,
+  resultsFile: path.basename(file),
+};
+await fs.writeFile(path.join(out, `${taskScope}.provenance.json`), JSON.stringify(provenance, null, 2));
 console.log(`\nresults -> ${file}`);
+console.log(`provenance -> ${path.join(out, `${taskScope}.provenance.json`)}`);
 
 async function baselineVerdict(task: string): Promise<string> {
   const d = path.join(JOBS, "baseline", task);

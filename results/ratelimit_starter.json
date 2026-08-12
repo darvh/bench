@@ -1,47 +1,77 @@
 [
   {
-    "arm": "naive",
+    "arm": "signal",
     "task": "crack-7z-hash",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "16"
+    "wall": "19"
   },
   {
-    "arm": "naive",
+    "arm": "signal",
     "task": "crack-7z-hash",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "14"
+    "wall": "22"
   },
   {
-    "arm": "naive",
-    "task": "crack-7z-hash",
-    "rep": "3",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "11"
-  },
-  {
-    "arm": "naive",
+    "arm": "signal",
     "task": "cancel-async-tasks",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "10"
+    "wall": "15"
   },
   {
-    "arm": "naive",
+    "arm": "signal",
     "task": "cancel-async-tasks",
+    "rep": "2",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "13"
+  },
+  {
+    "arm": "signal",
+    "task": "compile-compcert",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "12"
+  },
+  {
+    "arm": "signal",
+    "task": "compile-compcert",
+    "rep": "2",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "8"
+  },
+  {
+    "arm": "signal",
+    "task": "circuit-fibsqrt",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "9"
+  },
+  {
+    "arm": "signal",
+    "task": "circuit-fibsqrt",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
@@ -50,18 +80,8 @@
     "wall": "9"
   },
   {
-    "arm": "naive",
-    "task": "cancel-async-tasks",
-    "rep": "3",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "6"
-  },
-  {
-    "arm": "naive",
-    "task": "compile-compcert",
+    "arm": "signal",
+    "task": "build-pmars",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
@@ -70,83 +90,13 @@
     "wall": "7"
   },
   {
-    "arm": "naive",
-    "task": "compile-compcert",
+    "arm": "signal",
+    "task": "build-pmars",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
     "wall": "7"
-  },
-  {
-    "arm": "naive",
-    "task": "compile-compcert",
-    "rep": "3",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "7"
-  },
-  {
-    "arm": "naive",
-    "task": "circuit-fibsqrt",
-    "rep": "1",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "6"
-  },
-  {
-    "arm": "naive",
-    "task": "circuit-fibsqrt",
-    "rep": "2",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "6"
-  },
-  {
-    "arm": "naive",
-    "task": "circuit-fibsqrt",
-    "rep": "3",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "5"
-  },
-  {
-    "arm": "naive",
-    "task": "build-pmars",
-    "rep": "1",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "5"
-  },
-  {
-    "arm": "naive",
-    "task": "build-pmars",
-    "rep": "2",
-    "baseline": "n/a",
-    "verdict": "pass",
-    "skill_used": "false",
-    "tokens": "610928",
-    "wall": "216"
-  },
-  {
-    "arm": "naive",
-    "task": "build-pmars",
-    "rep": "3",
-    "baseline": "n/a",
-    "verdict": "pass",
-    "skill_used": "false",
-    "tokens": "440910",
-    "wall": "194"
   }
 ]

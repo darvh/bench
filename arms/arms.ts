@@ -2,7 +2,8 @@
  * Arms registry — the ONLY product-specific part of the bench.
  *
  * Skills are NOT vendored here. The recommended distribution path is: the
- * signal repo's installer (install.sh / bin/install.js) installs the skill
+ * signal repo's installer (install.sh — macOS/Linux/WSL; install.ps1 — Windows)
+ * installs the skill
  * into each agent's skills dir on the HOST. The bench resolves the HOST
  * installed copy (the same path a real user's agent loads) and passes it to
  * harbor — so the bench measures the real distribution + install path, not a
@@ -44,7 +45,25 @@ async function resolveSkill(name: string): Promise<string | null> {
   return null;
 }
 
-export async function ensureArmSkills(arm: ArmName): Promise<string[] | undefined> {
+export interface ArmSkills {
+  dirs: string[];
+  sourceSha: string | null; // installed skill revision (provenance)
+}
+
+// Installed skill revision: the git HEAD of the distribution checkout that
+// installed the host skills (symlinks point there), or null when unknown.
+async function installedSha(): Promise<string | null> {
+  try {
+    const p = Bun.spawn({ cmd: ["git", "-C", SKILL_SOURCE, "rev-parse", "HEAD"], stdout: "pipe", stderr: "pipe" });
+    const out = await new Response(p.stdout).text();
+    await p.exited;
+    return out.trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function ensureArmSkills(arm: ArmName): Promise<ArmSkills | undefined> {
   const names: Record<string, string[]> = {
     signal: ["signal"],
     clarity: ["clarity"],
@@ -68,7 +87,8 @@ export async function ensureArmSkills(arm: ArmName): Promise<string[] | undefine
       if (dir2) dirs.push(dir2);
     }
   }
-  return dirs.length ? dirs : undefined;
+  const sourceSha = await installedSha();
+  return dirs.length ? { dirs, sourceSha } : undefined;
 }
 
 export const ARMS: Record<ArmName, Arm> = {

@@ -7,7 +7,7 @@
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "16"
+    "wall": "20"
   },
   {
     "arm": "signal",
@@ -17,17 +17,17 @@
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "14"
+    "wall": "22"
   },
   {
     "arm": "signal",
     "task": "cancel-async-tasks",
     "rep": "1",
     "baseline": "n/a",
-    "verdict": "error",
+    "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "11"
+    "wall": "15"
   },
   {
     "arm": "signal",
@@ -37,12 +37,22 @@
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "10"
+    "wall": "13"
   },
   {
     "arm": "signal",
     "task": "compile-compcert",
     "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "12"
+  },
+  {
+    "arm": "signal",
+    "task": "compile-compcert",
+    "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
@@ -51,17 +61,27 @@
   },
   {
     "arm": "signal",
-    "task": "compile-compcert",
+    "task": "circuit-fibsqrt",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "9"
+  },
+  {
+    "arm": "signal",
+    "task": "circuit-fibsqrt",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
-    "wall": "6"
+    "wall": "9"
   },
   {
     "arm": "signal",
-    "task": "circuit-fibsqrt",
+    "task": "build-pmars",
     "rep": "1",
     "baseline": "n/a",
     "verdict": "fail",
@@ -71,32 +91,12 @@
   },
   {
     "arm": "signal",
-    "task": "circuit-fibsqrt",
+    "task": "build-pmars",
     "rep": "2",
     "baseline": "n/a",
     "verdict": "fail",
     "skill_used": "false",
     "tokens": "0",
     "wall": "7"
-  },
-  {
-    "arm": "signal",
-    "task": "build-pmars",
-    "rep": "1",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "6"
-  },
-  {
-    "arm": "signal",
-    "task": "build-pmars",
-    "rep": "2",
-    "baseline": "n/a",
-    "verdict": "fail",
-    "skill_used": "false",
-    "tokens": "0",
-    "wall": "5"
   }
 ]
