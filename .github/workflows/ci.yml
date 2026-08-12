@@ -18,5 +18,5 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: typecheck harness + arms
         run: |
-          bun add -d @types/bun
+          bun add -d @types/bun @types/node
           bunx tsc --noEmit harness/run.ts arms/arms.ts --module esnext --target esnext --moduleResolution bundler --skipLibCheck
