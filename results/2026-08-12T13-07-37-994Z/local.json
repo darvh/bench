@@ -1,0 +1,58 @@
+[
+  {
+    "arm": "naive",
+    "task": "path_starter",
+    "rep": "1",
+    "baseline": "fail",
+    "verdict": "pass",
+    "skill_used": "false",
+    "tokens": "53977",
+    "cost_usd": "0.000395",
+    "wall": "55",
+    "task_ref": "",
+    "started": "2026-08-12T13:07:37.994Z",
+    "skill_sha": ""
+  },
+  {
+    "arm": "signal",
+    "task": "path_starter",
+    "rep": "1",
+    "baseline": "fail",
+    "verdict": "pass",
+    "skill_used": "true",
+    "tokens": "88861",
+    "cost_usd": "0.000919",
+    "wall": "77",
+    "task_ref": "",
+    "started": "2026-08-12T13:07:37.994Z",
+    "skill_sha": "9cae58162b545d66b815bbc8f62601fc8d5bea56"
+  },
+  {
+    "arm": "clarity",
+    "task": "path_starter",
+    "rep": "1",
+    "baseline": "fail",
+    "verdict": "pass",
+    "skill_used": "true",
+    "tokens": "65476",
+    "cost_usd": "0.000529",
+    "wall": "56",
+    "task_ref": "",
+    "started": "2026-08-12T13:07:37.994Z",
+    "skill_sha": "9cae58162b545d66b815bbc8f62601fc8d5bea56"
+  },
+  {
+    "arm": "signal+clarity",
+    "task": "path_starter",
+    "rep": "1",
+    "baseline": "fail",
+    "verdict": "pass",
+    "skill_used": "true",
+    "tokens": "73237",
+    "cost_usd": "0.000698",
+    "wall": "65",
+    "task_ref": "",
+    "started": "2026-08-12T13:07:37.994Z",
+    "skill_sha": "9cae58162b545d66b815bbc8f62601fc8d5bea56"
+  }
+]

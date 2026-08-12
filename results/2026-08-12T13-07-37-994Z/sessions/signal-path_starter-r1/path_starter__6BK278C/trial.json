@@ -1,0 +1,131 @@
+{
+    "id": "985019db-bf96-4aa7-93f0-f1374dc4a7b4",
+    "task_name": "signal/path_starter",
+    "trial_name": "path_starter__6BK278C",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-12T13-07-37-994Z/signal-path_starter-r1/bench-signal-path_starter-r1/path_starter__6BK278C",
+    "task_id": {
+        "path": "<home>/Developer/bench/tasks/local/path_starter"
+    },
+    "source": null,
+    "task_checksum": "5dec7a2dafa3b8976bd81b6164db9cec562836960140c974e294c7be16f24959",
+    "config": {
+        "task": {
+            "path": "<home>/Developer/bench/tasks/local/path_starter",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "path_starter__6BK278C",
+        "trials_dir": "<home>/.cache/bench/2026-08-12T13-07-37-994Z/signal-path_starter-r1/bench-signal-path_starter-r1",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "opencode",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [
+                "<home>/.cache/bench/skills/signal"
+            ],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "variant": "high",
+                "opencode_config": {
+                    "provider": {
+                        "opencode-go": {
+                            "options": {
+                                "baseURL": "https://opencode.ai/zen/go/v1",
+                                "apiKey": "REDACTED"
+                            }
+                        }
+                    }
+                }
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-12T13-07-37-994Z/signal-path_starter-r1/instruction.md"
+        ],
+        "job_id": "52af9c25-34e7-46d1-9b4c-80ba11cc7033",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "opencode",
+        "version": "1.18.16",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 88861,
+        "n_cache_tokens": 86528,
+        "n_output_tokens": 1251,
+        "cost_usd": 0.0006796692,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-12T13:08:34.080678Z",
+    "finished_at": "2026-08-12T13:09:48.169233Z",
+    "environment_setup": {
+        "started_at": "2026-08-12T13:08:34.122259Z",
+        "finished_at": "2026-08-12T13:08:35.239086Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-12T13:08:35.466690Z",
+        "finished_at": "2026-08-12T13:08:56.741497Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-12T13:08:56.741687Z",
+        "finished_at": "2026-08-12T13:09:36.798981Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-12T13:09:37.300966Z",
+        "finished_at": "2026-08-12T13:09:37.555128Z"
+    },
+    "step_results": null
+}

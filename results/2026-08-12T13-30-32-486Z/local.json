@@ -1,0 +1,16 @@
+[
+  {
+    "arm": "signal",
+    "task": "path_starter",
+    "rep": "1",
+    "baseline": "fail",
+    "verdict": "pass",
+    "skill_used": "false",
+    "tokens": "46968",
+    "cost_usd": "0.000347",
+    "wall": "65",
+    "task_ref": "",
+    "started": "2026-08-12T13:30:32.487Z",
+    "skill_sha": "65fbabd2d6aa246acbceae95d869ab4d60c42bdd"
+  }
+]

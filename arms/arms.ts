@@ -63,6 +63,25 @@ async function installedSha(): Promise<string | null> {
   }
 }
 
+// Harbor copies each entry of agents[].skills into the container's skills
+// ROOT via `cp -r <dir>/* ~/.config/opencode/skills/` — which flattens a
+// single skill dir (SKILL.md lands in the root, opencode never finds it).
+// Stage the arm's skills under one dir, one subdir per skill, so the copy
+// preserves the required <skills>/<name>/SKILL.md layout.
+export async function stageSkills(arm: ArmName, stageRoot: string): Promise<ArmSkills | undefined> {
+  const info = await ensureArmSkills(arm);
+  if (!info) return undefined;
+  const stage = path.join(stageRoot, arm);
+  await fs.rm(stage, { recursive: true, force: true });
+  await fs.mkdir(stage, { recursive: true });
+  for (const dir of info.dirs) {
+    // host installs are symlinks — resolve so the staged copy is real files
+    const real = await fs.realpath(dir).catch(() => dir);
+    await fs.cp(real, path.join(stage, path.basename(dir)), { recursive: true, force: true });
+  }
+  return { dirs: [stage], sourceSha: info.sourceSha };
+}
+
 export async function ensureArmSkills(arm: ArmName): Promise<ArmSkills | undefined> {
   const names: Record<string, string[]> = {
     signal: ["signal"],
@@ -93,7 +112,17 @@ export async function ensureArmSkills(arm: ArmName): Promise<ArmSkills | undefin
 
 export const ARMS: Record<ArmName, Arm> = {
   naive: {},
-  signal: { hint: "Before making changes, use the Signal skill." },
-  clarity: { hint: "Before responding, use the Clarity skill." },
-  "signal+clarity": { hint: "Before making changes, use the Signal skill, then the Clarity skill." },
+  signal: {},
+  clarity: {},
+  "signal+clarity": {},
 };
+
+// Which installed skill names an arm expects the agent to load.
+export function armSkillNames(arm: ArmName): string[] {
+  const names: Record<string, string[]> = {
+    signal: ["signal"],
+    clarity: ["clarity"],
+    "signal+clarity": ["signal", "clarity"],
+  };
+  return names[arm] ?? [];
+}

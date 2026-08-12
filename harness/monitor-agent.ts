@@ -5,7 +5,7 @@ import { loadState, isAlive, setStatus, stopRun } from "./monitor";
  * A run is stalled when it is marked running but its heartbeat is older than
  * the window AND its process group is dead or unresponsive.
  *
- *   bun run benchmark/monitor-agent.ts [--hb-window 600]
+ *   bun run harness/monitor-agent.ts [--hb-window 600]
  */
 
 const HB_WINDOW_S = Number(process.argv.find((a) => a.startsWith("--hb-window="))?.split("=")[1] ?? 600);

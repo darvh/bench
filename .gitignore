@@ -1,3 +1,15 @@
 /.DS_Store
 node_modules/
 .cache/
+bench-archive/
+
+# secrets
+*.env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*

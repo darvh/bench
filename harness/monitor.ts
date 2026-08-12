@@ -9,17 +9,19 @@ import { homedir } from "node:os";
  * while alive, and is stoppable by id. The watchdog (monitor-agent.ts) polls
  * this state and auto-kills runs that stall past a heartbeat window.
  *
- *   bun run benchmark/monitor.ts status            list all runs
- *   bun run benchmark/monitor.ts stop <id|all>     kill run(s) (process group)
- *   bun run benchmark/monitor.ts watch <id>        tail a run's output log
+ *   bun run harness/monitor.ts status            list all runs
+ *   bun run harness/monitor.ts done [id]         exit 0 when run(s) finished
+ *   bun run harness/monitor.ts stop <id|all>     kill run(s) (process group)
+ *   bun run harness/monitor.ts watch <id>        tail a run's output log
  */
 
 export type RunStatus = "running" | "done" | "error" | "stopped";
 
 export interface RunState {
-  id: string; // arm-task
+  id: string; // arm-task-rep
+  runId: string; // per-invocation run folder id
   task: string;
-  arm: "cold" | "proof";
+  arm: string;
   pid: number;
   startedAt: string;
   lastHeartbeat: string;
@@ -128,6 +130,20 @@ if (import.meta.main) {
     console.log(renderStatus(runs));
     const running = runs.filter((r) => r.status === "running").length;
     console.log(`\n${running} running, ${runs.filter((r) => r.status === "done").length} done, ${runs.filter((r) => r.status === "error").length} error, ${runs.filter((r) => r.status === "stopped").length} stopped`);
+  } else if (cmd === "done") {
+    const runs = await loadState();
+    const target = arg ? runs.filter((r) => r.id === arg) : runs;
+    if (!target.length) {
+      console.error("no runs found");
+      process.exit(1);
+    }
+    const pending = target.filter((r) => r.status === "running" && isAlive(r));
+    if (pending.length) {
+      console.log(`pending: ${pending.map((r) => r.id).join(", ")}`);
+      process.exit(1);
+    }
+    console.log("done");
+    process.exit(0);
   } else if (cmd === "stop") {
     if (arg === "all") {
       const stopped = await stopRun("", true);
@@ -147,6 +163,6 @@ if (import.meta.main) {
     const p = Bun.spawn({ cmd: ["tail", "-f", r.outputLog], stdout: "inherit", stderr: "inherit" });
     await p.exited;
   } else {
-    console.log("usage: monitor.ts status | stop <id|all> | watch <id>\nstate: " + RUNS_DIR);
+    console.log("usage: harness/monitor.ts status | stop <id|all> | watch <id>\nstate: " + RUNS_DIR);
   }
 }

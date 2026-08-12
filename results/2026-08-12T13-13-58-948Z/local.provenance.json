@@ -1,0 +1,25 @@
+{
+  "runId": "2026-08-12T13-13-58-948Z",
+  "scope": "local",
+  "model": "opencode-go/deepseek-v4-flash",
+  "variant": "high",
+  "arms": [
+    "signal"
+  ],
+  "taskList": [
+    "path_starter"
+  ],
+  "reps": 1,
+  "startedAt": "2026-08-12T13:13:58.949Z",
+  "finishedAt": "2026-08-12T13:15:15.230Z",
+  "harness": "darvh/bench@5109dfd16132",
+  "skillSource": "github.com/darvh/signal (install.sh distribution path)",
+  "skillSha": "9cae58162b545d66b815bbc8f62601fc8d5bea56",
+  "pricePer1M": {
+    "input_miss": 0.14,
+    "input_hit": 0.0028,
+    "output": 0.28
+  },
+  "cells": 1,
+  "resultsFile": "local.json"
+}

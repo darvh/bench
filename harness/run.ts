@@ -2,7 +2,8 @@ import { promises as fs } from "node:fs";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
-import { ARMS, ensureArmSkills, type ArmName } from "../arms/arms";
+import { ARMS, stageSkills, armSkillNames, type ArmName } from "../arms/arms";
+import { runCell, baselineVerdict, MODEL, VARIANT, PRICE_INPUT_MISS_PER_1M, PRICE_INPUT_HIT_PER_1M, PRICE_OUTPUT_PER_1M, type CellResult } from "./cell";
 
 /**
  * Bench — universal docker + opencode benchmark driver.
@@ -15,8 +16,6 @@ import { ARMS, ensureArmSkills, type ArmName } from "../arms/arms";
  *                          [--reps 1] [--split] [--dry-run] [--out DIR]
  */
 
-const MODEL = "opencode-go/deepseek-v4-flash";
-const VARIANT = "high";
 const HERE = path.join(import.meta.dir);
 const REPO = path.join(HERE, "..");
 const TASKS_LOCAL = path.join(REPO, "tasks", "local");
@@ -25,6 +24,7 @@ const TB21_TASKS = ["crack-7z-hash", "cancel-async-tasks", "compile-compcert", "
 const LOCAL_TASKS = ["sql_starter", "path_starter", "ratelimit_starter"];
 const CACHE = process.env.XDG_CACHE_HOME ?? path.join(homedir(), ".cache");
 const JOBS = path.join(CACHE, "bench");
+const ARCHIVE = process.env.BENCH_ARCHIVE ?? path.join(REPO, "..", "bench-archive");
 
 const args = process.argv.slice(2);
 function flag(name: string, dflt: string): string {
@@ -35,36 +35,30 @@ function flag(name: string, dflt: string): string {
   return dflt;
 }
 const arms = flag("--arms", "naive,signal").split(",") as ArmName[];
-const taskScope = flag("--tasks", "tb21");
+const taskArg = flag("--tasks", "tb21");
+// tier from the value: "local"/"tb21", or a single known task name (split cells)
+const isLocal = taskArg === "local" || LOCAL_TASKS.includes(taskArg);
+const isTb = taskArg === "tb21" || TB21_TASKS.includes(taskArg);
+const taskScope = isLocal ? "local" : isTb ? "tb21" : taskArg;
+const taskList = isLocal
+  ? (taskArg === "local" ? LOCAL_TASKS : [taskArg])
+  : isTb
+    ? (taskArg === "tb21" ? TB21_TASKS : [taskArg])
+    : [taskArg];
 const reps = Number(flag("--reps", "2"));
 const dry = args.includes("--dry-run");
 const split = args.includes("--split");
 const out = flag("--out", path.join(REPO, "results"));
-const taskList = taskScope === "local" ? LOCAL_TASKS : TB21_TASKS;
+// every invocation gets its own folder under jobs + results — nothing overwrites
+const runId = flag("--run-id", new Date().toISOString().replace(/[:.]/g, "-"));
+const JOBS_RUN = path.join(JOBS, runId);
+const outRun = path.join(out, runId);
 
 function key(): string {
   const auth = JSON.parse(readFileSync(path.join(homedir(), ".local", "share", "opencode", "auth.json"), "utf8"));
   const k = auth["opencode-go"]?.key;
-  if (!k) throw new Error("opencode-go key not found");
+  if (!k) throw new Error("opencode-go key not found in auth.json");
   return k;
-}
-
-async function scrubKeyInPlace(dir: string, k: string): Promise<void> {
-  const stack = [dir];
-  while (stack.length) {
-    const d = stack.pop()!;
-    const entries = await fs.readdir(d, { withFileTypes: true }).catch(() => []);
-    for (const e of entries) {
-      const p = path.join(d, e.name);
-      if (e.isDirectory()) stack.push(p);
-      else {
-        try {
-          const t = await fs.readFile(p, "utf8");
-          if (t.includes(k)) await fs.writeFile(p, t.split(k).join("REDACTED"));
-        } catch {}
-      }
-    }
-  }
 }
 
 const startedAt = new Date().toISOString();
@@ -80,18 +74,6 @@ async function gitSha(dir: string): Promise<string> {
   }
 }
 
-async function jobTaskRef(jobsDir: string): Promise<string> {
-  const files = await fs.readdir(jobsDir).catch(() => []);
-  for (const f of files) {
-    try {
-      const d = JSON.parse(await fs.readFile(path.join(jobsDir, f, "result.json"), "utf8"));
-      const ref = d.task_id?.ref ?? d.config?.task?.ref;
-      if (ref) return ref;
-    } catch {}
-  }
-  return "";
-}
-
 const cells: { arm: ArmName; task: string; rep: number }[] = [];
 for (const arm of arms) for (const task of taskList) for (let r = 1; r <= reps; r++) cells.push({ arm, task, rep: r });
 
@@ -99,107 +81,95 @@ if (split) {
   const { register } = await import("./monitor");
   for (const c of cells) {
     const id = `${c.arm}-${c.task}-r${c.rep}`;
-    const log = path.join(JOBS, `${id}.log`);
+    const log = path.join(JOBS_RUN, `${id}.log`);
     await fs.mkdir(path.dirname(log), { recursive: true });
     const child = Bun.spawn({
-      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, `--reps=${c.rep}`, `--out=${out}`, ...(dry ? ["--dry-run"] : [])],
+      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, `--reps=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, ...(dry ? ["--dry-run"] : [])],
       cwd: REPO,
       detached: true,
       stdout: Bun.file(log),
       stderr: Bun.file(log),
     });
     child.unref();
-    await register({ id, task: c.task, arm: c.arm, pid: child.pid, outputLog: log, jobsDir: "" });
+    await register({ id, runId, task: c.task, arm: c.arm, pid: child.pid, outputLog: log, jobsDir: path.join(JOBS_RUN, id) });
   }
-  console.log(`[bench] ${cells.length} jobs launched — monitor: bun run harness/monitor.ts status`);
+  console.log(`[bench] ${cells.length} jobs launched (run ${runId}) — monitor: bun run harness/monitor.ts status`);
   process.exit(0);
 }
 
-console.log(`bench — model=${MODEL} arms=${arms.join(",")} tasks=${taskScope} reps=${reps}${dry ? " (dry-run)" : ""}`);
+console.log(`bench — model=${MODEL} variant=${VARIANT} run=${runId} arms=${arms.join(",")} tasks=${taskScope} reps=${reps}${dry ? " (dry-run)" : ""}`);
 const k = dry ? "" : key();
 const rows: Record<string, string>[] = [];
+const { register, heartbeat, setStatus, loadState, isAlive } = await import("./monitor");
 
 for (const c of cells) {
   const id = `${c.arm}-${c.task}-r${c.rep}`;
-  const jobsDir = path.join(JOBS, id);
-  const cfgPath = path.join(JOBS, `${id}.config.json`);
-  const log = path.join(JOBS, `${id}.log`);
-  await fs.mkdir(JOBS, { recursive: true });
+  const jobsDir = path.join(JOBS_RUN, id);
+  const log = path.join(JOBS_RUN, `${id}.log`);
+  await fs.mkdir(JOBS_RUN, { recursive: true });
+
+  // never clobber a live run sharing this id (would corrupt its jobs dir);
+  // in split mode the parent pre-registers this very process — exclude self
+  const live = (await loadState()).find((r) => r.id === id && r.status === "running" && r.pid !== process.pid && isAlive(r));
+  if (live) {
+    console.log(`  ${id} — already running (pid ${live.pid}), skipping`);
+    continue;
+  }
 
   // baseline: unmodified local starter must fail its adversarial verifier
-  const baseline = taskScope === "local" ? await baselineVerdict(c.task) : "n/a";
+  const baseline = isLocal ? await baselineVerdict(c.task, JOBS, TASKS_LOCAL) : "n/a";
   if (dry) {
     console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} baseline=${baseline} dry`);
     continue;
   }
 
   const arm = ARMS[c.arm];
-  const skillsInfo = await ensureArmSkills(c.arm); // real host install path
+  const skillsInfo = await stageSkills(c.arm, path.join(JOBS, "skills")); // harbor-safe staging
   const skills = skillsInfo?.dirs;
-  const cfg: Record<string, unknown> = {
-    job_name: `bench-${id}`,
-    jobs_dir: jobsDir,
-    n_attempts: 1,
-    n_concurrent_trials: 1,
-    retry: { max_retries: 0 },
-    quiet: true,
-    ...(taskScope === "local"
-      ? { tasks: [{ path: path.join(TASKS_LOCAL, c.task) }] }
-      : { datasets: [{ name: TB21_DATASET, task_names: [`terminal-bench/${c.task}`] }] }),
-    agents: [
-      {
-        name: "opencode",
-        model_name: MODEL,
-        ...(skills?.length ? { skills } : {}),
-        kwargs: {
-          variant: VARIANT,
-          opencode_config: {
-            provider: { "opencode-go": { options: { baseURL: "https://opencode.ai/zen/go/v1", apiKey: k } } },
-          },
-        },
-      },
-    ],
-  };
-  if (arm.hint) {
-    const instr = path.join(JOBS, `${id}-instruction.md`);
-    await fs.writeFile(instr, arm.hint);
-    (cfg as any).extra_instruction_paths = [instr];
-  }
-  await fs.writeFile(cfgPath, JSON.stringify(cfg, null, 2));
 
-  const { register, heartbeat, setStatus } = await import("./monitor");
-  await register({ id, task: c.task, arm: c.arm, pid: process.pid, outputLog: log, jobsDir });
-
-  const t0 = Date.now();
-  await fs.rm(jobsDir, { recursive: true, force: true });
-  const p = Bun.spawn({ cmd: ["harbor", "run", "--config", cfgPath], env: { ...process.env, OPENCODE_GO_API_KEY: k }, stdout: Bun.file(log), stderr: Bun.file(log) });
+  await register({ id, runId, task: c.task, arm: c.arm, pid: process.pid, outputLog: log, jobsDir });
   const hb = setInterval(() => heartbeat(id).catch(() => {}), 30_000);
-  const code = await p.exited;
-  clearInterval(hb);
-  await heartbeat(id);
-  const wallSec = Math.round((Date.now() - t0) / 1000);
-  await scrubKeyInPlace(jobsDir, k);
-  await fs.chmod(cfgPath, 0o600);
-  await setStatus(id, code === 0 ? "done" : "error");
+  let res: CellResult;
+  try {
+    res = await runCell({
+      id,
+      runId,
+      arm: c.arm,
+      task: c.task,
+      isLocal,
+      jobsDir,
+      log,
+      apiKey: k,
+      hint: arm.hint,
+      skills,
+      skillNames: armSkillNames(c.arm),
+      tasksLocalDir: TASKS_LOCAL,
+      datasetName: TB21_DATASET,
+      archiveRoot: ARCHIVE,
+      repoSessionsDir: path.join(outRun, "sessions"),
+    });
+  } finally {
+    clearInterval(hb);
+    await heartbeat(id);
+  }
+  await setStatus(id, res.ok ? "done" : "error");
 
-  const verdict = taskScope === "local" ? await trialVerdict(jobsDir) : await tbVerdict(jobsDir);
-  const tokens = await jobTokens(jobsDir);
-  const skillUsed = skills?.length ? await skillWasUsed(jobsDir, c.arm) : false;
-  const taskRef = await jobTaskRef(jobsDir);
   rows.push({
-    arm: c.arm, task: c.task, rep: String(c.rep), baseline, verdict, skill_used: String(skillUsed),
-    tokens: String(tokens), wall: String(wallSec), task_ref: taskRef,
-    started: startedAt, skill_sha: skillsInfo?.sourceSha ?? null, config: cfgPath,
+    arm: c.arm, task: c.task, rep: String(c.rep), baseline, verdict: res.verdict,
+    skill_used: String(res.skillUsed), tokens: String(res.tokens), cost_usd: String(res.costUsd),
+    wall: String(res.wallSec), task_ref: res.taskRef, started: startedAt,
+    skill_sha: skillsInfo?.sourceSha ?? "",
   });
-  console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} baseline=${baseline} verdict=${verdict} skill_used=${skillUsed} ${tokens} tok ${wallSec}s`);
+  console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} baseline=${baseline} verdict=${res.verdict} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
 }
 
-await fs.mkdir(out, { recursive: true });
-const file = path.join(out, `${taskScope}.json`);
+await fs.mkdir(outRun, { recursive: true });
+const file = path.join(outRun, `${taskScope}.json`);
 await fs.writeFile(file, JSON.stringify(rows, null, 2));
 // provenance: model, arms, skill revisions, task refs, timing — everything
 // needed to reproduce or audit the run.
 const provenance = {
+  runId,
   scope: taskScope,
   model: MODEL,
   variant: VARIANT,
@@ -210,61 +180,11 @@ const provenance = {
   finishedAt: new Date().toISOString(),
   harness: `darvh/bench@${(await gitSha(path.join(REPO))).slice(0, 12)}`,
   skillSource: "github.com/darvh/signal (install.sh distribution path)",
-  skillSha: rows[0]?.skill_sha ?? null,
+  skillSha: rows[0]?.skill_sha ?? "",
+  pricePer1M: { input_miss: PRICE_INPUT_MISS_PER_1M, input_hit: PRICE_INPUT_HIT_PER_1M, output: PRICE_OUTPUT_PER_1M },
   cells: rows.length,
   resultsFile: path.basename(file),
 };
-await fs.writeFile(path.join(out, `${taskScope}.provenance.json`), JSON.stringify(provenance, null, 2));
+await fs.writeFile(path.join(outRun, `${taskScope}.provenance.json`), JSON.stringify(provenance, null, 2));
 console.log(`\nresults -> ${file}`);
-console.log(`provenance -> ${path.join(out, `${taskScope}.provenance.json`)}`);
-
-async function baselineVerdict(task: string): Promise<string> {
-  const d = path.join(JOBS, "baseline", task);
-  await fs.mkdir(d, { recursive: true });
-  await fs.cp(path.join(TASKS_LOCAL, task, "environment", "starter.py"), path.join(d, "starter.py"), { force: true });
-  await fs.cp(path.join(TASKS_LOCAL, task, "tests", "verify.py"), path.join(d, "verify.py"), { force: true });
-  const v = Bun.spawn({ cmd: ["python3", "verify.py"], cwd: d, stdout: "pipe", stderr: "pipe" });
-  const o = await new Response(v.stdout).text();
-  return /VERDICT=(\w+)/.exec(o)?.[1] ?? "error";
-}
-
-async function trialVerdict(jobsDir: string): Promise<string> {
-  const files = await fs.readdir(jobsDir).catch(() => []);
-  for (const f of files) {
-    try {
-      const d = JSON.parse(await fs.readFile(path.join(jobsDir, f, "result.json"), "utf8"));
-      const ev = Object.values(d.stats?.evals ?? {})[0] as any;
-      const mean = ev?.metrics?.[0]?.mean;
-      if (mean !== undefined) return mean === 1 ? "pass" : mean === 0 ? "fail" : String(mean);
-    } catch {}
-  }
-  return "error";
-}
-
-async function tbVerdict(jobsDir: string): Promise<string> {
-  return trialVerdict(jobsDir);
-}
-
-async function jobTokens(jobsDir: string): Promise<number> {
-  let t = 0;
-  const files = await fs.readdir(jobsDir).catch(() => []);
-  for (const f of files) {
-    try {
-      const d = JSON.parse(await fs.readFile(path.join(jobsDir, f, "result.json"), "utf8"));
-      t += d.stats?.n_input_tokens ?? 0;
-    } catch {}
-  }
-  return t;
-}
-
-async function skillWasUsed(jobsDir: string, arm: ArmName): Promise<boolean> {
-  const files = await fs.readdir(jobsDir).catch(() => []);
-  for (const f of files) {
-    try {
-      const text = await fs.readFile(path.join(jobsDir, f, "agent", "opencode.txt"), "utf8");
-      if (text.includes(`"tool":"skill"`) && text.includes(arm)) return true;
-      if (new RegExp(`"skill"[^}]*${arm.replace("+", "\\+")}`, "i").test(text)) return true;
-    } catch {}
-  }
-  return false;
-}
+console.log(`provenance -> ${path.join(outRun, `${taskScope}.provenance.json`)}`);

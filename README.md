@@ -26,22 +26,25 @@ skill is missing, the harness runs the installer first (idempotent).
 
 Universal methodology: **every cell is one harbor job** — docker image +
 containerized opencode + official verifier. Arms differ ONLY by the skill
-installed in the container + a one-line hint. No host tooling, no plugins, no
-MCP — reproducible on any machine with docker + harbor.
+installed in the container — no prompt hints, no host tooling, no plugins, no
+MCP. The task prompt is identical across arms, so the bench measures whether
+the agent autonomously adopts and benefits from the skill. Reproducible on any
+machine with docker + harbor.
 
 ## Arms (the only product-specific part)
 
 | arm | skill installed | measures |
 | --- | --- | --- |
 | `naive` | — | baseline |
-| `signal` | `skills/signal` | efficacy: verify, reduce uncertainty |
-| `clarity` | `skills/clarity` | communication |
+| `signal` | `skills/signal` | efficacy + autonomous adoption |
+| `clarity` | `skills/clarity` | communication + autonomous adoption |
 | `signal+clarity` | both | the pair |
-| `context` | — (hint: context prepare) | discovery capsule |
-| `proof` | — (hint: proof verify) | verification strategy |
+| `context` | — | discovery capsule |
+| `proof` | — | verification strategy |
 
-Skills are vendored here (pinned) so the bench is self-contained; the source
-repos remain authoritative.
+Skills are NOT vendored: each cell resolves the host-installed copy (the exact
+path a real agent loads) and stages it into the container under its proper
+`<skills>/<name>/SKILL.md` layout; the source repos remain authoritative.
 
 ## Tasks
 
