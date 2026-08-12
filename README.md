@@ -4,13 +4,14 @@ Single home for every product's benchmark. Product repos stay clean (skills,
 CLI, hooks); all harness, arms, fixtures, and results live here.
 
 ```text
-arms/       arm registry (naive, signal, plain, signal+plain — context/proof added later)
+arms/       arm registry (naive, signal, clarity, signal+clarity; context/proof added later via the same registry)
 harness/    one driver (harbor + docker + opencode + monitor + security)
 tasks/      local adversarial starter tasks (sql, path, ratelimit)
-context/    context bench record: manifest, results, docs (harness centralized here)
-proof/      proof bench (Go): bench/, cmd/proofbench, conformance tests
 results/    per-product results (<scope>.json)
 ```
+
+Context and proof bench records moved out to `../bench-archive/` for now; the
+unified harness covers their arms when needed — no duplication.
 
 ## Skill distribution
 
