@@ -1,17 +1,38 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 /**
- * Post-pass report: turns results/<scope>.json into the comparison the bench
+ * Post-pass report: merges a run's result files into the comparison the bench
  * exists for — per arm: did the skill trigger, how many tokens, did it pass.
  *
- *   bun run harness/report.ts [results/local.json]
+ *   bun run harness/report.ts [results/<runId>]   # default: newest run
  */
 
 type Row = Record<string, string>;
 
-const file = process.argv[2] ?? path.join(import.meta.dir, "..", "results", "local.json");
-const rows = JSON.parse(readFileSync(file, "utf8")) as Row[];
+const resultsRoot = path.join(import.meta.dir, "..", "results");
+const runDir = process.argv[2] ?? path.join(resultsRoot, newestRun(resultsRoot));
+
+function newestRun(root: string): string {
+  const dirs = readdirSync(root).filter((d) => {
+    try {
+      return statSync(path.join(root, d)).isDirectory();
+    } catch {
+      return false;
+    }
+  });
+  return dirs.sort().at(-1) ?? "";
+}
+import { statSync } from "node:fs";
+
+const rows: Row[] = [];
+for (const f of readdirSync(runDir)) {
+  if (!f.endsWith(".json") || f.endsWith(".provenance.json")) continue;
+  try {
+    const r = JSON.parse(readFileSync(path.join(runDir, f), "utf8"));
+    if (Array.isArray(r)) rows.push(...(r as Row[]));
+  } catch {}
+}
 
 const arms = [...new Set(rows.map((r) => r.arm))];
 const pad = (s: string, n: number) => s.padEnd(n);

@@ -83,7 +83,7 @@ if (split) {
     const log = path.join(JOBS_RUN, `${id}.log`);
     await fs.mkdir(path.dirname(log), { recursive: true });
     const child = Bun.spawn({
-      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, `--reps=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, ...(dry ? ["--dry-run"] : [])],
+      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, `--reps=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, `--dataset=${datasetName}`, `--task-prefix=${taskPrefix}`, `--agent-timeout-mult=${agentTimeoutMult}`, `--skills-src=${skillsSrc}`, ...(dry ? ["--dry-run"] : [])],
       cwd: REPO,
       detached: true,
       stdout: Bun.file(log),
@@ -157,13 +157,15 @@ for (const c of cells) {
     arm: c.arm, task: c.task, rep: String(c.rep), verdict: res.verdict,
     skill_used: String(res.skillUsed), tokens: String(res.tokens), cost_usd: String(res.costUsd),
     wall: String(res.wallSec), task_ref: res.taskRef, started: startedAt,
-    skill_sha: skillsInfo?.sourceSha ?? "",
+    skill_sha: res.skillSha || skillsInfo?.sourceSha || "", skill_source: res.skillSource,
   });
   console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} verdict=${res.verdict} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
 }
 
 await fs.mkdir(outRun, { recursive: true });
-const file = path.join(outRun, `${taskScope}.json`);
+// single-arm invocations (split children) write per-arm files so parallel
+// cells never clobber each other's results
+const file = path.join(outRun, arms.length === 1 ? `${taskScope}-${arms[0]}.json` : `${taskScope}.json`);
 await fs.writeFile(file, JSON.stringify(rows, null, 2));
 // provenance: model, arms, skill revisions, task refs, timing — everything
 // needed to reproduce or audit the run.
@@ -184,6 +186,7 @@ const provenance = {
   cells: rows.length,
   resultsFile: path.basename(file),
 };
-await fs.writeFile(path.join(outRun, `${taskScope}.provenance.json`), JSON.stringify(provenance, null, 2));
+await fs.writeFile(path.join(outRun, `${path.basename(file, ".json")}.provenance.json`), JSON.stringify(provenance, null, 2));
 console.log(`\nresults -> ${file}`);
-console.log(`provenance -> ${path.join(outRun, `${taskScope}.provenance.json`)}`);
+console.log(`provenance -> ${path.join(outRun, `${path.basename(file, ".json")}.provenance.json`)}`);
+console.log(`view -> bun run harness/view.ts ${runId}   (native harbor viewer on the jobs dir)`);

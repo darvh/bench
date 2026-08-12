@@ -28,6 +28,8 @@ export interface CellResult {
   skillUsed: boolean;
   taskRef: string;
   wallSec: number;
+  skillSha: string; // harbor-recorded provenance: git commit sha or content digest
+  skillSource: string;
 }
 
 export interface CellOpts {
@@ -99,7 +101,20 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     stdout: Bun.file(o.log),
     stderr: Bun.file(o.log),
   });
+  // opencode occasionally hangs after finishing its turn (events stop, process
+  // never exits) — the cell would otherwise burn the full agent timeout.
+  // Watch the latest transcript: if it freezes for STALL_MS, kill the opencode
+  // process inside the container so harbor's pipeline ends and the verifier runs.
+  const STALL_MS = 300_000;
+  const poll = setInterval(() => stallWatch(o.jobsDir, o.task).catch(() => {}), 20_000);
+  // live-stream: harbor keeps the agent transcript inside the container until
+  // the trial ends — poll docker cp into results/<runId>/live/<id>/ so every
+  // command is visible from the repo in real time.
+  const liveDir = path.join(o.repoSessionsDir, "..", "live", o.id);
+  const stream = setInterval(() => streamLive(o.task, liveDir).catch(() => {}), 10_000);
   const code = await p.exited;
+  clearInterval(poll);
+  clearInterval(stream);
   const wallSec = Math.round((Date.now() - t0) / 1000);
 
   // key hygiene: scrub jobsDir (incl. config.json) + the harbor log
@@ -114,7 +129,8 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
   const costUsd = await jobCostUsd(o.jobsDir);
   const skillUsed = o.skillNames?.length ? await skillWasUsed(o.jobsDir, o.skillNames) : false;
   const taskRef = await jobTaskRef(o.jobsDir);
-  return { ok: code === 0, verdict, tokens, costUsd, skillUsed, taskRef, wallSec };
+  const prov = await skillProvenance(o.jobsDir);
+  return { ok: code === 0, verdict, tokens, costUsd, skillUsed, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source };
 }
 
 // ---- result.json discovery ----
@@ -207,6 +223,22 @@ async function jobTaskRef(jobsDir: string): Promise<string> {
   return ref ?? "";
 }
 
+// Skill provenance recorded by harbor in the trial lock.json: git_commit_id
+// for git skills, content digest for local dirs.
+async function skillProvenance(jobsDir: string): Promise<{ sha: string; source: string }> {
+  for (const dir of await trialDirs(jobsDir)) {
+    try {
+      const lock = JSON.parse(await fs.readFile(path.join(dir, "lock.json"), "utf8"));
+      const skills: { name: string; source?: string; digest?: string; git_commit_id?: string; git_url?: string }[] =
+        lock.skills ?? [];
+      const sha = skills.map((s) => s.git_commit_id ?? s.digest ?? "").filter(Boolean).join(",");
+      const source = skills.map((s) => s.git_url ?? s.source ?? s.name ?? "").filter(Boolean).join(",");
+      if (sha) return { sha, source };
+    } catch {}
+  }
+  return { sha: "", source: "" };
+}
+
 // Preserve each trial's session transcript + verdict in the archive (outside
 // the repo — transcripts are large and not for git). The jobs dir may be
 // cleaned later; this is the durable copy.
@@ -241,6 +273,68 @@ async function skillWasUsed(jobsDir: string, names: string[]): Promise<boolean> 
     } catch {}
   }
   return false;
+}
+
+// ---- live stream ----
+
+// Find the trial container (compose project name embeds the task slug).
+async function findContainer(task: string): Promise<string | null> {
+  const slug = task.split("/").pop()!.toLowerCase();
+  const names = await Bun.$`docker ps --format {{.Names}}`.text().catch(() => "");
+  return names.split("\n").find((n) => n.toLowerCase().includes(slug)) ?? null;
+}
+
+// Copy the live agent transcript out of the container into the repo.
+async function streamLive(task: string, liveDir: string): Promise<void> {
+  const c = await findContainer(task);
+  if (!c) return;
+  await fs.mkdir(liveDir, { recursive: true });
+  await Bun.$`docker cp ${c}:/logs/agent/opencode.txt ${liveDir}/opencode.txt`.quiet().catch(() => {});
+}
+
+// ---- stall watchdog ----
+
+// State kept per cell: last seen transcript size+mtime and when it froze.
+const stallState = new Map<string, { size: number; mtime: number; frozenAt: number }>();
+
+// Find the newest opencode.txt under jobsDir (recursive), its (size, mtime).
+async function transcriptStats(jobsDir: string): Promise<{ size: number; mtime: number } | null> {
+  const found: { path: string; mtime: number }[] = [];
+  const walk = async (d: string, depth: number): Promise<void> => {
+    if (depth > 5) return;
+    const entries = await fs.readdir(d, { withFileTypes: true }).catch(() => []);
+    for (const e of entries) {
+      const p = path.join(d, e.name);
+      if (e.isDirectory()) await walk(p, depth + 1);
+      else if (e.name === "opencode.txt") {
+        const st = await fs.stat(p).catch(() => null);
+        if (st) found.push({ path: p, mtime: st.mtimeMs });
+      }
+    }
+  };
+  await walk(jobsDir, 0);
+  if (!found.length) return null;
+  const latest = found.reduce((a, b) => (a.mtime > b.mtime ? a : b));
+  const st = await fs.stat(latest.path).catch(() => null);
+  return st ? { size: st.size, mtime: st.mtimeMs } : null;
+}
+
+async function stallWatch(jobsDir: string, task: string): Promise<void> {
+  const st = await transcriptStats(jobsDir);
+  if (!st) return; // agent hasn't started yet — never stall during env/setup
+  const prev = stallState.get(jobsDir) as { size: number; mtime: number; frozenAt: number } | undefined;
+  if (!prev || prev.size !== st.size || prev.mtime !== st.mtime) {
+    stallState.set(jobsDir, { size: st.size, mtime: st.mtime, frozenAt: Date.now() });
+    return;
+  }
+  const frozenFor = Date.now() - (prev.frozenAt ?? 0);
+  if (frozenFor < 300_000) return;
+  // frozen past the stall window: kill the hung opencode inside the container
+  const container = await findContainer(task);
+  if (!container) return;
+  console.log(`[cell] ${task}: transcript frozen — killing opencode in ${container}`);
+  await Bun.$`docker exec ${container} pkill -f "opencode --model"`.quiet().catch(() => {});
+  stallState.delete(jobsDir);
 }
 
 // ---- key hygiene helpers ----

@@ -70,5 +70,20 @@ Per-run monitor state = one file per run (no shared-state races).
 `verdict` (official reward), `skill_used` (proof from the session transcript
 that the skill was actually loaded), `tokens`, `cost_usd` (at the DeepSeek V4
 Flash price schedule), `wall`. Sessions (trajectory + results) land in
-`results/<runId>/sessions/` and `harness/session.ts` prints the per-step view;
-`harness/viz.ts` renders a local HTML timeline.
+`results/<runId>/sessions/`; live streaming during a run:
+`results/<runId>/live/<cell>/opencode.txt`.
+
+## Viewing runs
+
+Native harbor viewer (per-step trajectories, trial inspection, job compare):
+
+```text
+bun run harness/view.ts [runId]     # default: newest run
+```
+
+Ad-hoc native runs without the harness:
+
+```text
+harbor run -d swe-bench/swe-bench-verified -m opencode-go/deepseek-v4-flash -a opencode
+harbor dataset list
+```
