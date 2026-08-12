@@ -1,0 +1,52 @@
+[
+  {
+    "arm": "signal",
+    "task": "crack-7z-hash",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "17"
+  },
+  {
+    "arm": "signal",
+    "task": "cancel-async-tasks",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "8"
+  },
+  {
+    "arm": "signal",
+    "task": "compile-compcert",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "9"
+  },
+  {
+    "arm": "signal",
+    "task": "circuit-fibsqrt",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "10"
+  },
+  {
+    "arm": "signal",
+    "task": "build-pmars",
+    "rep": "1",
+    "baseline": "n/a",
+    "verdict": "fail",
+    "skill_used": "false",
+    "tokens": "0",
+    "wall": "10"
+  }
+]
