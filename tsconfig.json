@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "types": ["node", "bun"],
+    "lib": ["ESNext"],
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["harness/**/*.ts", "arms/**/*.ts"]
+}
