@@ -19,4 +19,4 @@ jobs:
       - name: typecheck harness + arms
         run: |
           bun add -d @types/bun @types/node
-          bunx tsc --noEmit harness/run.ts arms/arms.ts --module esnext --target esnext --moduleResolution bundler --skipLibCheck
+          bunx tsc --noEmit -p tsconfig.json
