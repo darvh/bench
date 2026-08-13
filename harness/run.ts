@@ -36,6 +36,7 @@ function flag(name: string, dflt: string): string {
 const arms = flag("--arms", "naive,signal").split(",") as ArmName[];
 const taskArg = flag("--tasks", "tb21");
 const datasetName = flag("--dataset", TB21_DATASET);
+const taskDir = flag("--task-dir", ""); // local task dir (e.g. tasks/ponytail)
 // tb21 task names carry a "terminal-bench/" prefix in the dataset; swe-bench
 // instance ids are "swe-bench/django__django-11099".
 const taskPrefix = flag("--task-prefix", datasetName.startsWith("swe-bench") ? "swe-bench/" : "terminal-bench/");
@@ -44,13 +45,17 @@ const taskScope = taskArg === "tb21" || TB21_TASKS.includes(taskArg) ? "tb21" : 
 const taskList = taskArg === "tb21" ? TB21_TASKS : [taskArg];
 const reps = Number(flag("--reps", "2"));
 const dry = args.includes("--dry-run");
-const split = args.includes("--split");
 const skillsSrc = flag("--skills-src", "local"); // local (staged host install) | remote (git ref)
 const agentTimeoutMult = Number(flag("--agent-timeout-mult", "1.0"));
 const repFlag = flag("--rep", ""); // split children carry their rep for file naming
 const agent = (flag("--agent", "pi") === "opencode" ? "opencode" : "pi") as "opencode" | "pi";
 const probeSkills = args.includes("--probe-skills");
 const alwaysOn = flag("--mode", "skill") === "always-on"; // mount skill content as AGENTS.md
+const useRtk = args.includes("--rtk"); // pi + rtk: compress bash outputs in-container
+const capOutput = args.includes("--cap-output"); // cap large tool results fed back to the model
+const RTK_BIN = path.join(CACHE, "bench", "rtk", "rtk");
+const RTK_PI_EXT = path.join(process.env.XDG_CONFIG_HOME ?? path.join(homedir(), ".config"), "opencode", "repos", "rtk", "hooks", "pi", "rtk.ts");
+const CAP_OUTPUT_EXT = path.join(HERE, "pi-extensions", "capoutput.ts");
 const agPath = flag("--ag-path", datasetName.startsWith("swe-bench") ? "/testbed/AGENTS.md" : "/app/AGENTS.md");
 const stallTimeoutSec = Number(flag("--stall-timeout-sec", "0"));
 const out = flag("--out", path.join(REPO, "results"));
@@ -85,26 +90,6 @@ async function gitSha(dir: string): Promise<string> {
 
 const cells: { arm: ArmName; task: string; rep: number }[] = [];
 for (const arm of arms) for (const task of taskList) for (let r = 1; r <= reps; r++) cells.push({ arm, task, rep: r });
-
-if (split) {
-  const { register } = await import("./monitor");
-  for (const c of cells) {
-    const id = `${c.arm}-${c.task}-r${c.rep}`;
-    const log = path.join(JOBS_RUN, `${id}.log`);
-    await fs.mkdir(path.dirname(log), { recursive: true });
-    const child = Bun.spawn({
-      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, "--reps=1", `--rep=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, `--dataset=${datasetName}`, `--task-prefix=${taskPrefix}`, `--agent-timeout-mult=${agentTimeoutMult}`, `--skills-src=${skillsSrc}`, `--agent=${agent}`, `--stall-timeout-sec=${stallTimeoutSec}`, ...(alwaysOn ? [`--mode=always-on`, `--ag-path=${agPath}`] : []), ...(probeSkills ? ["--probe-skills"] : []), ...(dry ? ["--dry-run"] : [])],
-      cwd: REPO,
-      detached: true,
-      stdout: Bun.file(log),
-      stderr: Bun.file(log),
-    });
-    child.unref();
-    await register({ id, runId, task: c.task, arm: c.arm, pid: child.pid, outputLog: log, jobsDir: path.join(JOBS_RUN, id) });
-  }
-  console.log(`[bench] ${cells.length} jobs launched (run ${runId}) — monitor: bun run harness/monitor.ts status`);
-  process.exit(0);
-}
 
 console.log(`bench — model=${MODEL} variant=${VARIANT} run=${runId} arms=${arms.join(",")} tasks=${taskScope} reps=${reps}${dry ? " (dry-run)" : ""}`);
 const k = dry ? "" : key();
@@ -144,25 +129,25 @@ for (const c of cells) {
     const mounts: { source: string; target: string }[] = [];
     const refs: string[] = [];
     for (const dir of skills) {
-      // stageSkills returns one root per arm containing <skill>/SKILL.md. For
-      // single-skill arms mount the skill dir at .<skill>/; for multi-skill
-      // arms mount the whole root and ref each .<root>/<skill>/SKILL.md.
-      const stagedName = path.basename(dir);
-      const nested = path.join(dir, stagedName);
-      const hasNestedSkill = await fs.access(path.join(nested, "SKILL.md")).then(() => true).catch(() => false);
-      if (hasNestedSkill) {
-        const target = path.posix.join(cwd, `.${stagedName}`);
-        mounts.push({ source: nested, target });
-        refs.push(`.${stagedName}/SKILL.md`);
-      } else {
-        const target = path.posix.join(cwd, `.${stagedName}`);
-        mounts.push({ source: dir, target });
-        const subs = await fs.readdir(dir).catch(() => []);
-        for (const sub of subs) {
-          if (await fs.access(path.join(dir, sub, "SKILL.md")).then(() => true).catch(() => false)) {
-            refs.push(`.${stagedName}/${sub}/SKILL.md`);
-          }
+      // stageSkills returns a root containing <skill>/SKILL.md. Mount each
+      // skill at its own expected path, including combined arms.
+      const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => []);
+      const nestedSkills: string[] = [];
+      for (const entry of entries) {
+        if (!entry.isDirectory()) continue;
+        if (await fs.access(path.join(dir, entry.name, "SKILL.md")).then(() => true).catch(() => false)) {
+          nestedSkills.push(entry.name);
         }
+      }
+      if (nestedSkills.length) {
+        for (const name of nestedSkills) {
+          mounts.push({ source: path.join(dir, name), target: path.posix.join(cwd, `.${name}`) });
+          refs.push(`.${name}/SKILL.md`);
+        }
+      } else {
+        const name = path.basename(dir);
+        mounts.push({ source: dir, target: path.posix.join(cwd, `.${name}`) });
+        refs.push(`.${name}/SKILL.md`);
       }
     }
     const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
@@ -191,8 +176,11 @@ for (const c of cells) {
       skillNames: armSkillNames(c.arm),
       probeSkills,
       alwaysOn: alwaysOnCfg,
+      ...(useRtk ? { rtk: { bin: RTK_BIN, ext: RTK_PI_EXT } } : {}),
+      ...(capOutput ? { capOutput: CAP_OUTPUT_EXT } : {}),
       datasetName,
       taskPrefix,
+      taskDir: taskDir || undefined,
       agentTimeoutMult,
       stallTimeoutSec,
       archiveRoot: ARCHIVE,

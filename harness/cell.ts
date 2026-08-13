@@ -51,8 +51,11 @@ export interface CellOpts {
     agHostFile: string; // generated AGENTS.md (host path, mounted read-only)
     agTarget: string;
   };
+  rtk?: { bin: string; ext: string }; // pi + rtk: compress bash outputs
+  capOutput?: string; // pi extension that caps large tool results (host path)
   datasetName: string;
   taskPrefix: string; // e.g. "terminal-bench/" or "swe-bench/" for instance ids
+  taskDir?: string; // local task dir (tasks/ponytail/...) — uses tasks:[{path}] instead of datasets
   agentTimeoutMult: number; // multiplier on the task's agent timeout
   stallTimeoutSec: number; // optional transcript watchdog; 0 disables it
   archiveRoot: string; // transcripts land in <archiveRoot>/transcripts/<runId>/<id>/<trial>/
@@ -105,17 +108,31 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     retry: { max_retries: 0 },
     quiet: true,
     agent_timeout_multiplier: o.agentTimeoutMult,
-    ...(o.alwaysOn
+    ...(o.rtk || o.capOutput
       ? {
           environment: {
             mounts: [
-              ...o.alwaysOn.mounts.map((m) => ({ type: "bind", source: m.source, target: m.target, read_only: true })),
-              { type: "bind", source: o.alwaysOn.agHostFile, target: o.alwaysOn.agTarget, read_only: true },
+              ...(o.alwaysOn?.mounts ?? []).map((m) => ({ type: "bind", source: m.source, target: m.target, read_only: true })),
+              ...(o.alwaysOn ? [{ type: "bind", source: o.alwaysOn.agHostFile, target: o.alwaysOn.agTarget, read_only: true }] : []),
+              ...(o.rtk ? [{ type: "bind", source: o.rtk.bin, target: "/usr/local/bin/rtk", read_only: true }] : []),
+              ...(o.rtk ? [{ type: "bind", source: o.rtk.ext, target: "/root/.pi/agent/extensions/rtk.ts", read_only: true }] : []),
+              ...(o.capOutput ? [{ type: "bind", source: o.capOutput, target: "/root/.pi/agent/extensions/capoutput.ts", read_only: true }] : []),
             ],
           },
         }
-      : {}),
-    datasets: [{ name: o.datasetName, task_names: o.taskPrefix ? [`${o.taskPrefix}${o.task}`] : [o.task] }],
+      : o.alwaysOn
+        ? {
+            environment: {
+              mounts: [
+                ...o.alwaysOn.mounts.map((m) => ({ type: "bind", source: m.source, target: m.target, read_only: true })),
+                { type: "bind", source: o.alwaysOn.agHostFile, target: o.alwaysOn.agTarget, read_only: true },
+              ],
+            },
+          }
+        : {}),
+    ...(o.taskDir
+      ? { tasks: [{ path: path.join(o.taskDir, o.task) }] }
+      : { datasets: [{ name: o.datasetName, task_names: o.taskPrefix ? [`${o.taskPrefix}${o.task}`] : [o.task] }] }),
     agents: [buildAgent(o)],
   };
   const cfgPath = path.join(o.jobsDir, "config.json");
