@@ -1,0 +1,25 @@
+{
+  "runId": "2026-08-13T10-40-01-277Z",
+  "scope": "django__django-11276",
+  "model": "opencode-go/deepseek-v4-flash",
+  "variant": "high",
+  "arms": [
+    "ponytail"
+  ],
+  "taskList": [
+    "django__django-11276"
+  ],
+  "reps": 1,
+  "startedAt": "2026-08-13T10:40:01.298Z",
+  "finishedAt": "2026-08-13T11:49:01.293Z",
+  "harness": "darvh/bench@5ce8fa779434",
+  "skillSource": "github.com/darvh/signal (install.sh distribution path)",
+  "skillSha": "c8629010d95e783f91e84ffa91596819c6c8815d",
+  "pricePer1M": {
+    "input_miss": 0.14,
+    "input_hit": 0.0028,
+    "output": 0.28
+  },
+  "cells": 1,
+  "resultsFile": "django__django-11276-ponytail-r1.json"
+}

@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { homedir } from "node:os";
-import { ARMS, stageSkills, armSkillNames, armSkillRefs, armSkillContent, type ArmName } from "../arms/arms";
+import { ARMS, stageSkills, armSkillNames, armSkillRefs, type ArmName } from "../arms/arms";
 import { runCell, MODEL, VARIANT, PRICE_INPUT_MISS_PER_1M, PRICE_INPUT_HIT_PER_1M, PRICE_OUTPUT_PER_1M, type CellResult } from "./cell";
 
 /**
@@ -47,10 +47,12 @@ const dry = args.includes("--dry-run");
 const split = args.includes("--split");
 const skillsSrc = flag("--skills-src", "local"); // local (staged host install) | remote (git ref)
 const agentTimeoutMult = Number(flag("--agent-timeout-mult", "1.0"));
+const repFlag = flag("--rep", ""); // split children carry their rep for file naming
 const agent = (flag("--agent", "pi") === "opencode" ? "opencode" : "pi") as "opencode" | "pi";
 const probeSkills = args.includes("--probe-skills");
 const alwaysOn = flag("--mode", "skill") === "always-on"; // mount skill content as AGENTS.md
 const agPath = flag("--ag-path", datasetName.startsWith("swe-bench") ? "/testbed/AGENTS.md" : "/app/AGENTS.md");
+const stallTimeoutSec = Number(flag("--stall-timeout-sec", "0"));
 const out = flag("--out", path.join(REPO, "results"));
 // every invocation gets its own folder under jobs + results — nothing overwrites
 const runId = flag("--run-id", new Date().toISOString().replace(/[:.]/g, "-"));
@@ -65,6 +67,10 @@ function key(): string {
 }
 
 const startedAt = new Date().toISOString();
+
+if (alwaysOn && skillsSrc === "remote") {
+  throw new Error("--mode=always-on requires --skills-src=local");
+}
 
 async function gitSha(dir: string): Promise<string> {
   try {
@@ -87,7 +93,7 @@ if (split) {
     const log = path.join(JOBS_RUN, `${id}.log`);
     await fs.mkdir(path.dirname(log), { recursive: true });
     const child = Bun.spawn({
-      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, `--reps=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, `--dataset=${datasetName}`, `--task-prefix=${taskPrefix}`, `--agent-timeout-mult=${agentTimeoutMult}`, `--skills-src=${skillsSrc}`, `--agent=${agent}`, ...(alwaysOn ? [`--mode=always-on`, `--ag-path=${agPath}`] : []), ...(probeSkills ? ["--probe-skills"] : []), ...(dry ? ["--dry-run"] : [])],
+      cmd: ["bun", "run", "harness/run.ts", `--arms=${c.arm}`, `--tasks=${c.task}`, "--reps=1", `--rep=${c.rep}`, `--out=${out}`, `--run-id=${runId}`, `--dataset=${datasetName}`, `--task-prefix=${taskPrefix}`, `--agent-timeout-mult=${agentTimeoutMult}`, `--skills-src=${skillsSrc}`, `--agent=${agent}`, `--stall-timeout-sec=${stallTimeoutSec}`, ...(alwaysOn ? [`--mode=always-on`, `--ag-path=${agPath}`] : []), ...(probeSkills ? ["--probe-skills"] : []), ...(dry ? ["--dry-run"] : [])],
       cwd: REPO,
       detached: true,
       stdout: Bun.file(log),
@@ -127,7 +133,7 @@ for (const c of cells) {
   const arm = ARMS[c.arm];
   // skills source: staged host install (default) or remote git ref (harbor
   // resolves org/name or tree URL, sparse-checkout into cache)
-  const skillsInfo = skillsSrc === "remote" ? undefined : await stageSkills(c.arm, path.join(JOBS, "skills"));
+  const skillsInfo = skillsSrc === "remote" ? undefined : await stageSkills(c.arm, path.join(JOBS_RUN, "skills", id));
   const skills = skillsSrc === "remote" ? armSkillRefs(c.arm) : skillsInfo?.dirs;
 
   // always-on mode: mount the whole skill dir(s) into the task cwd + an
@@ -138,10 +144,26 @@ for (const c of cells) {
     const mounts: { source: string; target: string }[] = [];
     const refs: string[] = [];
     for (const dir of skills) {
-      const name = path.basename(dir);
-      const target = path.posix.join(cwd, `.${name}`);
-      mounts.push({ source: dir, target });
-      refs.push(`.${name}/SKILL.md`);
+      // stageSkills returns one root per arm containing <skill>/SKILL.md. For
+      // single-skill arms mount the skill dir at .<skill>/; for multi-skill
+      // arms mount the whole root and ref each .<root>/<skill>/SKILL.md.
+      const stagedName = path.basename(dir);
+      const nested = path.join(dir, stagedName);
+      const hasNestedSkill = await fs.access(path.join(nested, "SKILL.md")).then(() => true).catch(() => false);
+      if (hasNestedSkill) {
+        const target = path.posix.join(cwd, `.${stagedName}`);
+        mounts.push({ source: nested, target });
+        refs.push(`.${stagedName}/SKILL.md`);
+      } else {
+        const target = path.posix.join(cwd, `.${stagedName}`);
+        mounts.push({ source: dir, target });
+        const subs = await fs.readdir(dir).catch(() => []);
+        for (const sub of subs) {
+          if (await fs.access(path.join(dir, sub, "SKILL.md")).then(() => true).catch(() => false)) {
+            refs.push(`.${stagedName}/${sub}/SKILL.md`);
+          }
+        }
+      }
     }
     const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
     await fs.writeFile(
@@ -172,6 +194,7 @@ for (const c of cells) {
       datasetName,
       taskPrefix,
       agentTimeoutMult,
+      stallTimeoutSec,
       archiveRoot: ARCHIVE,
       repoSessionsDir: path.join(outRun, "sessions"),
     });
@@ -181,19 +204,23 @@ for (const c of cells) {
   }
   await setStatus(id, res.ok ? "done" : "error");
 
-  rows.push({
+    rows.push({
     arm: c.arm, task: c.task, rep: String(c.rep), verdict: res.verdict,
-    skill_used: String(res.skillUsed), tokens: String(res.tokens), cost_usd: String(res.costUsd),
+    completion: res.completion, skill_used: String(res.skillUsed), tokens: String(res.tokens), cost_usd: String(res.costUsd),
     wall: String(res.wallSec), task_ref: res.taskRef, started: startedAt,
     skill_sha: res.skillSha || skillsInfo?.sourceSha || "", skill_source: res.skillSource,
   });
-  console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} verdict=${res.verdict} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
+  console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} verdict=${res.verdict} completion=${res.completion} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
 }
 
 await fs.mkdir(outRun, { recursive: true });
 // single-arm invocations (split children) write per-arm files so parallel
-// cells never clobber each other's results
-const file = path.join(outRun, arms.length === 1 ? `${taskScope}-${arms[0]}.json` : `${taskScope}.json`);
+// cells never clobber each other's results; rep comes from --rep (the child
+// runs --reps=1, so cells[0].rep is always 1)
+const rep = repFlag || String(cells[0]?.rep ?? 1);
+const file = arms.length === 1
+  ? path.join(outRun, `${taskScope}-${arms[0]}-r${rep}.json`)
+  : path.join(outRun, `${taskScope}.json`);
 await fs.writeFile(file, JSON.stringify(rows, null, 2));
 // provenance: model, arms, skill revisions, task refs, timing — everything
 // needed to reproduce or audit the run.

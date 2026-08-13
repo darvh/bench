@@ -14,7 +14,7 @@ import path from "node:path";
 import { homedir } from "node:os";
 import { promises as fs } from "node:fs";
 
-export type ArmName = "naive" | "signal" | "clarity" | "signal+clarity" | "caveman" | "ponytail" | "caveman+ponytail";
+export type ArmName = "naive" | "signal" | "caveman" | "ponytail" | "caveman+ponytail";
 
 export interface Arm {
   skills?: string[]; // skill dirs installed into the container (skill tool)
@@ -85,8 +85,6 @@ export async function stageSkills(arm: ArmName, stageRoot: string): Promise<ArmS
 export async function ensureArmSkills(arm: ArmName): Promise<ArmSkills | undefined> {
   const names: Record<string, string[]> = {
     signal: ["signal"],
-    clarity: ["clarity"],
-    "signal+clarity": ["signal", "clarity"],
     caveman: ["caveman"],
     ponytail: ["ponytail"],
     "caveman+ponytail": ["caveman", "ponytail"],
@@ -116,8 +114,6 @@ export async function ensureArmSkills(arm: ArmName): Promise<ArmSkills | undefin
 export const ARMS: Record<ArmName, Arm> = {
   naive: {},
   signal: {},
-  clarity: {},
-  "signal+clarity": {},
   caveman: {},
   ponytail: {},
   "caveman+ponytail": {},
@@ -141,8 +137,6 @@ export async function armSkillContent(arm: ArmName): Promise<string> {
 export function armSkillNames(arm: ArmName): string[] {
   const names: Record<string, string[]> = {
     signal: ["signal"],
-    clarity: ["clarity"],
-    "signal+clarity": ["signal", "clarity"],
     caveman: ["caveman"],
     ponytail: ["ponytail"],
     "caveman+ponytail": ["caveman", "ponytail"],
@@ -156,8 +150,9 @@ export function armSkillRefs(arm: ArmName, ref = "main"): string[] {
   const base = (name: string) => `https://github.com/darvh/signal/tree/${ref}/${name}`;
   const refs: Record<string, string[]> = {
     signal: [base("signal")],
-    clarity: [base("clarity")],
-    "signal+clarity": [base("signal"), base("clarity")],
+    caveman: [base("caveman")],
+    ponytail: [base("ponytail")],
+    "caveman+ponytail": [base("caveman"), base("ponytail")],
   };
   return refs[arm] ?? [];
 }

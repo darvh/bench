@@ -1,0 +1,25 @@
+{
+  "runId": "2026-08-13T11-51-46-070Z",
+  "scope": "django__django-11276",
+  "model": "opencode-go/deepseek-v4-flash",
+  "variant": "high",
+  "arms": [
+    "signal"
+  ],
+  "taskList": [
+    "django__django-11276"
+  ],
+  "reps": 2,
+  "startedAt": "2026-08-13T11:51:46.108Z",
+  "finishedAt": "2026-08-13T11:56:59.119Z",
+  "harness": "darvh/bench@b5d1bcb5c34a",
+  "skillSource": "github.com/darvh/signal (install.sh distribution path)",
+  "skillSha": "c8629010d95e783f91e84ffa91596819c6c8815d",
+  "pricePer1M": {
+    "input_miss": 0.14,
+    "input_hit": 0.0028,
+    "output": 0.28
+  },
+  "cells": 1,
+  "resultsFile": "django__django-11276-signal-r2.json"
+}

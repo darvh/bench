@@ -23,6 +23,7 @@ export const PRICE_OUTPUT_PER_1M = 0.28;
 export interface CellResult {
   ok: boolean;
   verdict: string;
+  completion: "normal" | "terminated" | "timeout" | "error";
   tokens: number;
   costUsd: number;
   skillUsed: boolean;
@@ -53,6 +54,7 @@ export interface CellOpts {
   datasetName: string;
   taskPrefix: string; // e.g. "terminal-bench/" or "swe-bench/" for instance ids
   agentTimeoutMult: number; // multiplier on the task's agent timeout
+  stallTimeoutSec: number; // optional transcript watchdog; 0 disables it
   archiveRoot: string; // transcripts land in <archiveRoot>/transcripts/<runId>/<id>/<trial>/
   repoSessionsDir: string; // repo copy: <results>/<runId>/sessions/<id>/<trial>/
 }
@@ -138,22 +140,24 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     cmd: ["harbor", "run", "--config", cfgPath],
     stdout: Bun.file(o.log),
     stderr: Bun.file(o.log),
-    // opencode/pi read the go key via their native provider env
-    env: { ...process.env, OPENCODE_API_KEY: o.apiKey },
+    // pi reads the go key via OPENCODE_API_KEY env; opencode gets it via config
+    env: o.agent === "pi" ? { ...process.env, OPENCODE_API_KEY: o.apiKey } : { ...process.env },
   });
   // opencode occasionally hangs after finishing its turn (events stop, process
   // never exits) — the cell would otherwise burn the full agent timeout.
   // Watch the latest transcript: if it freezes for STALL_MS, kill the opencode
   // process inside the container so harbor's pipeline ends and the verifier runs.
   const STALL_MS = 300_000;
-  const poll = setInterval(() => stallWatch(o.jobsDir, o.task, transcriptName(o.agent)).catch(() => {}), 20_000);
+  const poll = o.stallTimeoutSec > 0
+    ? setInterval(() => stallWatch(o.jobsDir, o.task, transcriptName(o.agent), o.agent, o.stallTimeoutSec * 1000).catch(() => {}), 20_000)
+    : undefined;
   // live-stream: harbor keeps the agent transcript inside the container until
   // the trial ends — poll docker cp into results/<runId>/live/<id>/ so every
   // command is visible from the repo in real time.
   const liveDir = path.join(o.repoSessionsDir, "..", "live", o.id);
-  const stream = setInterval(() => streamLive(o.task, liveDir, transcriptName(o.agent)).catch(() => {}), 10_000);
+  const stream = setInterval(() => streamLive(o.task, liveDir, transcriptName(o.agent), o.jobsDir).catch(() => {}), 10_000);
   const code = await p.exited;
-  clearInterval(poll);
+  if (poll) clearInterval(poll);
   clearInterval(stream);
   const wallSec = Math.round((Date.now() - t0) / 1000);
 
@@ -165,12 +169,13 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
   await archiveTranscripts(o.jobsDir, o.repoSessionsDir, o.id, false, transcriptName(o.agent));
 
   const verdict = await trialVerdict(o.jobsDir);
+  const completion = await trialCompletion(o.jobsDir, code);
   const tokens = await jobTokens(o.jobsDir);
   const costUsd = await jobCostUsd(o.jobsDir);
   const skillUsed = o.skillNames?.length ? await skillWasUsed(o.jobsDir, o.skillNames, transcriptName(o.agent)) : false;
   const taskRef = await jobTaskRef(o.jobsDir);
   const prov = await skillProvenance(o.jobsDir);
-  return { ok: code === 0, verdict, tokens, costUsd, skillUsed, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source };
+  return { ok: code === 0, verdict, completion, tokens, costUsd, skillUsed, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source };
 }
 
 // ---- result.json discovery ----
@@ -237,6 +242,21 @@ async function trialVerdict(jobsDir: string): Promise<string> {
   const mean = ev?.metrics?.[0]?.mean;
   if (mean !== undefined) return mean === 1 ? "pass" : mean === 0 ? "fail" : String(mean);
   return "error";
+}
+
+async function trialCompletion(jobsDir: string, processCode: number): Promise<CellResult["completion"]> {
+  for (const dir of await trialDirs(jobsDir)) {
+    try {
+      const d = JSON.parse(await fs.readFile(path.join(dir, "result.json"), "utf8"));
+      const e = d.exception_info;
+      if (!e) return processCode === 0 ? "normal" : "error";
+      const text = `${e.exception_type ?? ""} ${e.exception_message ?? ""}`.toLowerCase();
+      if (text.includes("timeout") || text.includes("timed out")) return "timeout";
+      if (text.includes("exit 143") || text.includes("terminated") || text.includes("signal")) return "terminated";
+      return "error";
+    } catch {}
+  }
+  return processCode === 0 ? "normal" : "error";
 }
 
 async function jobTokens(jobsDir: string): Promise<number> {
@@ -309,6 +329,9 @@ async function skillWasUsed(jobsDir: string, names: string[], transcriptFile: st
       for (const name of names) {
         if (text.includes(`"tool":"skill"`) && text.includes(name)) return true;
         if (new RegExp(`"skill"[^}]*${name.replace("+", "\\+")}`, "i").test(text)) return true;
+        // Always-on arms expose skills through AGENTS.md, so the agent reads
+        // the file with its normal file tool instead of a skill tool.
+        if (new RegExp(`\\.${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) return true;
       }
     } catch {}
   }
@@ -317,16 +340,46 @@ async function skillWasUsed(jobsDir: string, names: string[], transcriptFile: st
 
 // ---- live stream ----
 
-// Find the trial container (compose project name embeds the task slug).
-async function findContainer(task: string): Promise<string | null> {
-  const slug = task.split("/").pop()!.toLowerCase();
+// Find this cell's trial container. Multiple concurrent cells can share a
+// task slug, so match the container by the cell's trial hash (the dir name
+// `<task>__<hash>` under jobsDir), not the slug.
+async function findContainer(task: string, jobsDir: string): Promise<string | null> {
+  const trialHash = await trialHashOf(jobsDir, task);
   const names = await Bun.$`docker ps --format {{.Names}}`.text().catch(() => "");
-  return names.split("\n").find((n) => n.toLowerCase().includes(slug)) ?? null;
+  const list = names.split("\n").filter(Boolean);
+  if (trialHash) {
+    // container hashes are lowercased by docker — compare case-insensitively
+    const hit = list.find((n) => n.toLowerCase().includes(trialHash.toLowerCase()));
+    if (hit) return hit;
+  }
+  const slug = task.split("/").pop()!.toLowerCase();
+  return list.find((n) => n.toLowerCase().includes(slug)) ?? null;
+}
+
+// Find `<task>__<hash>` dir under jobsDir; return the hash.
+async function trialHashOf(jobsDir: string, task: string): Promise<string | null> {
+  const slug = task.split("/").pop()!;
+  const walk = async (d: string, depth: number): Promise<string | null> => {
+    if (depth > 3) return null;
+    const entries = await fs.readdir(d, { withFileTypes: true }).catch(() => []);
+    for (const e of entries) {
+      if (!e.isDirectory()) continue;
+      const p = path.join(d, e.name);
+      if (e.name.startsWith(`${slug}__`)) {
+        const hash = e.name.slice(slug.length + 2);
+        if (hash) return hash;
+      }
+      const deeper = await walk(p, depth + 1);
+      if (deeper) return deeper;
+    }
+    return null;
+  };
+  return walk(jobsDir, 0);
 }
 
 // Copy the live agent transcript out of the container into the repo.
-async function streamLive(task: string, liveDir: string, transcriptFile: string): Promise<void> {
-  const c = await findContainer(task);
+async function streamLive(task: string, liveDir: string, transcriptFile: string, jobsDir: string): Promise<void> {
+  const c = await findContainer(task, jobsDir);
   if (!c) return;
   await fs.mkdir(liveDir, { recursive: true });
   await Bun.$`docker cp ${c}:/logs/agent/${transcriptFile} ${liveDir}/${transcriptFile}`.quiet().catch(() => {});
@@ -359,7 +412,7 @@ async function transcriptStats(jobsDir: string, transcriptFile: string): Promise
   return st ? { size: st.size, mtime: st.mtimeMs } : null;
 }
 
-async function stallWatch(jobsDir: string, task: string, transcriptFile: string): Promise<void> {
+async function stallWatch(jobsDir: string, task: string, transcriptFile: string, agent: "opencode" | "pi", stallMs: number): Promise<void> {
   const st = await transcriptStats(jobsDir, transcriptFile);
   if (!st) return; // agent hasn't started yet — never stall during env/setup
   const prev = stallState.get(jobsDir) as { size: number; mtime: number; frozenAt: number } | undefined;
@@ -368,12 +421,13 @@ async function stallWatch(jobsDir: string, task: string, transcriptFile: string)
     return;
   }
   const frozenFor = Date.now() - (prev.frozenAt ?? 0);
-  if (frozenFor < 300_000) return;
-  // frozen past the stall window: kill the hung opencode inside the container
-  const container = await findContainer(task);
+  if (frozenFor < stallMs) return;
+  // frozen past the stall window: kill the hung agent inside the container
+  const container = await findContainer(task, jobsDir);
   if (!container) return;
-  console.log(`[cell] ${task}: transcript frozen — killing opencode in ${container}`);
-  await Bun.$`docker exec ${container} pkill -f "opencode --model"`.quiet().catch(() => {});
+  const pattern = agent === "pi" ? "pi --print" : "opencode --model";
+  console.log(`[cell] ${task}: transcript frozen — killing ${agent} in ${container}`);
+  await Bun.$`docker exec ${container} pkill -f ${pattern}`.quiet().catch(() => {});
   stallState.delete(jobsDir);
 }
 

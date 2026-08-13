@@ -80,6 +80,7 @@ export async function setStatus(id: string, status: RunStatus, note?: string): P
 }
 
 export function isAlive(r: RunState): boolean {
+  if (r.pid <= 1) return false; // pid 1 is init — kill(1,0) always succeeds
   try {
     process.kill(r.pid, 0);
     return true;
