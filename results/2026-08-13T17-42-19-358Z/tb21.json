@@ -1,0 +1,62 @@
+[
+  {
+    "arm": "ponytail",
+    "task": "build-pmars",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "199273",
+    "cost_usd": "0.003585",
+    "wall": "370",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  },
+  {
+    "arm": "caveman",
+    "task": "build-pmars",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "161466",
+    "cost_usd": "0.002724",
+    "wall": "431",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  },
+  {
+    "arm": "naive",
+    "task": "build-pmars",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "false",
+    "tokens": "282735",
+    "cost_usd": "0.00426",
+    "wall": "447",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "",
+    "skill_source": ""
+  },
+  {
+    "arm": "signal",
+    "task": "build-pmars",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "250751",
+    "cost_usd": "0.00419",
+    "wall": "345",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "arm": "signal",
+    "task": "sympy__sympy-13878",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "6391477",
+    "cost_usd": "0.041667",
+    "wall": "1279",
+    "task_ref": "",
+    "started": "2026-08-13T18:09:08.915Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  },
+  {
+    "arm": "naive",
+    "task": "sympy__sympy-13878",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "false",
+    "tokens": "4764066",
+    "cost_usd": "0.034408",
+    "wall": "1540",
+    "task_ref": "",
+    "started": "2026-08-13T18:09:08.915Z",
+    "skill_sha": "",
+    "skill_source": ""
+  },
+  {
+    "arm": "ponytail",
+    "task": "sympy__sympy-13878",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "2616684",
+    "cost_usd": "0.02084",
+    "wall": "646",
+    "task_ref": "",
+    "started": "2026-08-13T18:09:08.915Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  },
+  {
+    "arm": "caveman",
+    "task": "sympy__sympy-13878",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "3007133",
+    "cost_usd": "0.025544",
+    "wall": "1802",
+    "task_ref": "",
+    "started": "2026-08-13T18:09:08.915Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  }
+]

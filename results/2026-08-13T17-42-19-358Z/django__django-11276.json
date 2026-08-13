@@ -1,0 +1,62 @@
+[
+  {
+    "arm": "signal",
+    "task": "django__django-11276",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "864860",
+    "cost_usd": "0.010109",
+    "wall": "278",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  },
+  {
+    "arm": "naive",
+    "task": "django__django-11276",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "false",
+    "tokens": "741247",
+    "cost_usd": "0.008827",
+    "wall": "386",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "",
+    "skill_source": ""
+  },
+  {
+    "arm": "caveman",
+    "task": "django__django-11276",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "958682",
+    "cost_usd": "0.009892",
+    "wall": "491",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  },
+  {
+    "arm": "ponytail",
+    "task": "django__django-11276",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "true",
+    "tokens": "2139148",
+    "cost_usd": "0.016479",
+    "wall": "586",
+    "task_ref": "",
+    "started": "2026-08-13T17:42:19.359Z",
+    "skill_sha": "f8cf1e47f381128560801f08501fdf9c64a984c1",
+    "skill_source": ""
+  }
+]

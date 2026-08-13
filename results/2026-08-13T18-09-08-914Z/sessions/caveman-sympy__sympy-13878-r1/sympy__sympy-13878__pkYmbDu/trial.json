@@ -1,0 +1,137 @@
+{
+    "id": "da5f89b9-7647-4ccf-8ba8-a0cfd83fff34",
+    "task_name": "swe-bench/sympy__sympy-13878",
+    "trial_name": "sympy__sympy-13878__pkYmbDu",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-13T18-09-08-914Z/caveman-sympy__sympy-13878-r1/bench-caveman-sympy__sympy-13878-r1/sympy__sympy-13878__pkYmbDu",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "sympy__sympy-13878",
+        "ref": "sha256:3115cfaeeba06f3edb434db3cb89e08a1d6fd93d2e51aff9afa47c17a9084745"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "9ae23d9a7d00655edb9ac3399b26f840292159cd94dc3acb7616a44d671be9a2",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/sympy__sympy-13878",
+            "ref": "sha256:3115cfaeeba06f3edb434db3cb89e08a1d6fd93d2e51aff9afa47c17a9084745",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "sympy__sympy-13878__pkYmbDu",
+        "trials_dir": "<home>/.cache/bench/2026-08-13T18-09-08-914Z/caveman-sympy__sympy-13878-r1/bench-caveman-sympy__sympy-13878-r1",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-13T18-09-08-914Z/skills/caveman-sympy__sympy-13878-r1/caveman/caveman",
+                    "target": "/testbed/.caveman",
+                    "read_only": true
+                },
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-13T18-09-08-914Z/caveman-sympy__sympy-13878-r1.AGENTS.md",
+                    "target": "/testbed/AGENTS.md",
+                    "read_only": true
+                }
+            ],
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-13T18-09-08-914Z/caveman-sympy__sympy-13878-r1/bench-stop.md"
+        ],
+        "job_id": "933b1bd9-ea6c-429b-8334-9d8dcb32e98c",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.1",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 3007133,
+        "n_cache_tokens": 2969216,
+        "n_output_tokens": 42579,
+        "cost_usd": 0.0255443048,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-13T18:09:13.807094Z",
+    "finished_at": "2026-08-13T18:39:08.801915Z",
+    "environment_setup": {
+        "started_at": "2026-08-13T18:09:13.869143Z",
+        "finished_at": "2026-08-13T18:09:19.404885Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-13T18:09:19.405025Z",
+        "finished_at": "2026-08-13T18:11:37.202882Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-13T18:11:37.204766Z",
+        "finished_at": "2026-08-13T18:38:25.067007Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-13T18:38:25.770132Z",
+        "finished_at": "2026-08-13T18:38:57.219328Z"
+    },
+    "step_results": null
+}
