@@ -1,0 +1,137 @@
+{
+    "id": "4e6fd366-173f-4209-b1a0-1c125b0fe0ba",
+    "task_name": "swe-bench/django__django-16560",
+    "trial_name": "django__django-16560__DZzuvoy",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-13T18-53-58-442Z/ponytail-django__django-16560-r1/bench-ponytail-django__django-16560-r1/django__django-16560__DZzuvoy",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "django__django-16560",
+        "ref": "sha256:8ddc11efd8d76a20477d864cd264f323020de1bc9e8628796144039b109f41a0"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "1b5c1a795dc29bbbb5bbd88969343e512fea74a92df2112c3febc75acbcaf473",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/django__django-16560",
+            "ref": "sha256:8ddc11efd8d76a20477d864cd264f323020de1bc9e8628796144039b109f41a0",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "django__django-16560__DZzuvoy",
+        "trials_dir": "<home>/.cache/bench/2026-08-13T18-53-58-442Z/ponytail-django__django-16560-r1/bench-ponytail-django__django-16560-r1",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-13T18-53-58-442Z/skills/ponytail-django__django-16560-r1/ponytail/ponytail",
+                    "target": "/testbed/.ponytail",
+                    "read_only": true
+                },
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-13T18-53-58-442Z/ponytail-django__django-16560-r1.AGENTS.md",
+                    "target": "/testbed/AGENTS.md",
+                    "read_only": true
+                }
+            ],
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-13T18-53-58-442Z/ponytail-django__django-16560-r1/bench-stop.md"
+        ],
+        "job_id": "b5f2e247-b099-4357-9208-a24318f75204",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.1",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 1836662,
+        "n_cache_tokens": 1796096,
+        "n_output_tokens": 25229,
+        "cost_usd": 0.0177724288,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-13T19:31:11.194591Z",
+    "finished_at": "2026-08-13T19:39:12.863690Z",
+    "environment_setup": {
+        "started_at": "2026-08-13T19:31:11.230979Z",
+        "finished_at": "2026-08-13T19:31:15.134565Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-13T19:31:15.134633Z",
+        "finished_at": "2026-08-13T19:33:07.895147Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-13T19:33:07.895587Z",
+        "finished_at": "2026-08-13T19:37:30.236025Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-13T19:37:30.889248Z",
+        "finished_at": "2026-08-13T19:39:01.435870Z"
+    },
+    "step_results": null
+}
