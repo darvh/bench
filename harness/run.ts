@@ -42,7 +42,7 @@ const taskDir = flag("--task-dir", ""); // local task dir (e.g. tasks/ponytail)
 const taskPrefix = flag("--task-prefix", datasetName.startsWith("swe-bench") ? "swe-bench/" : "terminal-bench/");
 // tier from the value: "tb21" or a single known task name (split cells)
 const taskScope = taskArg === "tb21" || TB21_TASKS.includes(taskArg) ? "tb21" : taskArg;
-const taskList = taskArg === "tb21" ? TB21_TASKS : [taskArg];
+const taskList = taskArg === "tb21" ? TB21_TASKS : taskArg.includes(",") ? taskArg.split(",").filter(Boolean) : [taskArg];
 const reps = Number(flag("--reps", "2"));
 const dry = args.includes("--dry-run");
 const skillsSrc = flag("--skills-src", "local"); // local (staged host install) | remote (git ref)
@@ -57,7 +57,7 @@ const RTK_BIN = path.join(CACHE, "bench", "rtk", "rtk");
 const RTK_PI_EXT = path.join(process.env.XDG_CONFIG_HOME ?? path.join(homedir(), ".config"), "opencode", "repos", "rtk", "hooks", "pi", "rtk.ts");
 const CAP_OUTPUT_EXT = path.join(HERE, "pi-extensions", "capoutput.ts");
 const agPath = flag("--ag-path", datasetName.startsWith("swe-bench") ? "/testbed/AGENTS.md" : "/app/AGENTS.md");
-const stallTimeoutSec = Number(flag("--stall-timeout-sec", "0"));
+const stallTimeoutSec = Number(flag("--stall-timeout-sec", "300"));
 const out = flag("--out", path.join(REPO, "results"));
 // every invocation gets its own folder under jobs + results — nothing overwrites
 const runId = flag("--run-id", new Date().toISOString().replace(/[:.]/g, "-"));
@@ -96,23 +96,24 @@ const k = dry ? "" : key();
 const rows: Record<string, string>[] = [];
 const { register, heartbeat, setStatus, loadState, isAlive } = await import("./monitor");
 
-for (const c of cells) {
+const parallel = Math.max(1, Number(flag("--parallel", "1")));
+
+async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<void> {
   const id = `${c.arm}-${c.task}-r${c.rep}`;
   const jobsDir = path.join(JOBS_RUN, id);
   const log = path.join(JOBS_RUN, `${id}.log`);
   await fs.mkdir(JOBS_RUN, { recursive: true });
 
-  // never clobber a live run sharing this id (would corrupt its jobs dir);
-  // in split mode the parent pre-registers this very process — exclude self
+  // never clobber a live run sharing this id (would corrupt its jobs dir)
   const live = (await loadState()).find((r) => r.id === id && r.status === "running" && r.pid !== process.pid && isAlive(r));
   if (live) {
     console.log(`  ${id} — already running (pid ${live.pid}), skipping`);
-    continue;
+    return;
   }
 
   if (dry) {
     console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} dry`);
-    continue;
+    return;
   }
 
   const arm = ARMS[c.arm];
@@ -200,6 +201,12 @@ for (const c of cells) {
   });
   console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} verdict=${res.verdict} completion=${res.completion} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
 }
+
+let next = 0;
+const worker = async (): Promise<void> => {
+  while (next < cells.length) await runOne(cells[next++]);
+};
+await Promise.all(Array.from({ length: Math.min(parallel, cells.length) }, worker));
 
 await fs.mkdir(outRun, { recursive: true });
 // single-arm invocations (split children) write per-arm files so parallel

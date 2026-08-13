@@ -31,6 +31,7 @@ export interface CellResult {
   wallSec: number;
   skillSha: string; // harbor-recorded provenance: git commit sha or content digest
   skillSource: string;
+  stalled: boolean; // watchdog killed the agent — retry, don't score
 }
 
 export interface CellOpts {
@@ -91,6 +92,21 @@ function buildAgent(o: CellOpts): Record<string, unknown> {
 }
 
 export async function runCell(o: CellOpts): Promise<CellResult> {
+  // a watchdog kill (stall) means the run was cut short — retry fresh rather
+  // than scoring the partial state. Only a non-stalled completion counts.
+  const maxAttempts = 3;
+  let last: CellResult | null = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const res = await runAttempt(o);
+    last = res;
+    if (!res.stalled) return res;
+    console.log(`[cell] ${o.task} (${o.id}): stalled attempt ${attempt}/${maxAttempts} — retrying`);
+  }
+  return { ...last!, ok: false, verdict: "error", tokens: 0, costUsd: 0 };
+}
+
+async function runAttempt(o: CellOpts): Promise<CellResult> {
+  stallFlag.delete(o.jobsDir); // reset per attempt
   await fs.rm(o.jobsDir, { recursive: true, force: true });
   await fs.rm(o.log, { force: true });
   await fs.mkdir(o.jobsDir, { recursive: true });
@@ -152,6 +168,15 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     await writePrivate(cfgPath, JSON.stringify(cfg, null, 2));
   }
 
+  // hard stop directive: prevents the agent from starting follow-up turns after
+  // the task is done (which is when pi/opencode hang on the gateway)
+  {
+    const stop = path.join(o.jobsDir, "bench-stop.md");
+    await writePrivate(stop, "When the task is complete, STOP immediately. Do not continue working, do not ask follow-up questions, do not start another turn.");
+    cfg.extra_instruction_paths = [...(cfg.extra_instruction_paths as string[] ?? []), stop];
+    await writePrivate(cfgPath, JSON.stringify(cfg, null, 2));
+  }
+
   const t0 = Date.now();
   const p = Bun.spawn({
     cmd: ["harbor", "run", "--config", cfgPath],
@@ -178,6 +203,10 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
   clearInterval(stream);
   const wallSec = Math.round((Date.now() - t0) / 1000);
 
+  // A stall AFTER the agent signalled completion (agent_settled / final stop)
+  // is the known CLI exit hang — the fix is done, so score it rather than retry.
+  const stalled = (stallFlag.get(o.jobsDir) ?? false) && !(await agentCompleted(o.jobsDir, o.agent));
+
   // key hygiene: scrub jobsDir (incl. config.json) + the harbor log
   await scrubKeyInPlace(o.jobsDir, o.apiKey);
   await scrubKeyInPlace(o.log, o.apiKey);
@@ -192,7 +221,7 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
   const skillUsed = o.skillNames?.length ? await skillWasUsed(o.jobsDir, o.skillNames, transcriptName(o.agent)) : false;
   const taskRef = await jobTaskRef(o.jobsDir);
   const prov = await skillProvenance(o.jobsDir);
-  return { ok: code === 0, verdict, completion, tokens, costUsd, skillUsed, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source };
+  return { ok: code === 0, verdict, completion, tokens, costUsd, skillUsed, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source, stalled };
 }
 
 // ---- result.json discovery ----
@@ -287,7 +316,7 @@ async function jobCostUsd(jobsDir: string): Promise<number> {
   const d = await jobResult(jobsDir);
   if (!d?.stats) return 0;
   const s = d.stats;
-  const miss = (s.n_input_tokens ?? 0) - (s.n_cache_tokens ?? 0);
+  const miss = Math.max(0, (s.n_input_tokens ?? 0) - (s.n_cache_tokens ?? 0));
   const hit = s.n_cache_tokens ?? 0;
   const out = s.n_output_tokens ?? 0;
   const usd = (miss * PRICE_INPUT_MISS_PER_1M + hit * PRICE_INPUT_HIT_PER_1M + out * PRICE_OUTPUT_PER_1M) / 1e6;
@@ -346,10 +375,22 @@ async function skillWasUsed(jobsDir: string, names: string[], transcriptFile: st
       for (const name of names) {
         if (text.includes(`"tool":"skill"`) && text.includes(name)) return true;
         if (new RegExp(`"skill"[^}]*${name.replace("+", "\\+")}`, "i").test(text)) return true;
-        // Always-on arms expose skills through AGENTS.md, so the agent reads
-        // the file with its normal file tool instead of a skill tool.
         if (new RegExp(`\\.${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) return true;
       }
+    } catch {}
+  }
+  return false;
+}
+
+// Did the agent signal completion (final answer) before any stall? pi emits
+// agent_settled; opencode emits a step_finish with reason "stop".
+async function agentCompleted(jobsDir: string, agent: "opencode" | "pi"): Promise<boolean> {
+  const transcriptFile = transcriptName(agent);
+  for (const dir of await trialDirs(jobsDir)) {
+    try {
+      const text = await fs.readFile(path.join(dir, "agent", transcriptFile), "utf8");
+      if (agent === "pi") return text.includes('"type":"agent_settled"');
+      return /"reason":"stop"/.test(text);
     } catch {}
   }
   return false;
@@ -404,8 +445,10 @@ async function streamLive(task: string, liveDir: string, transcriptFile: string,
 
 // ---- stall watchdog ----
 
-// State kept per cell: last seen transcript size+mtime and when it froze.
-const stallState = new Map<string, { size: number; mtime: number; frozenAt: number }>();
+// State kept per cell: last seen transcript size and when it froze.
+const stallState = new Map<string, { size: number; frozenAt: number }>();
+// Set when the watchdog kills the agent this attempt (triggers a retry).
+const stallFlag = new Map<string, boolean>();
 
 // Find the newest opencode.txt under jobsDir (recursive), its (size, mtime).
 async function transcriptStats(jobsDir: string, transcriptFile: string): Promise<{ size: number; mtime: number } | null> {
@@ -432,9 +475,11 @@ async function transcriptStats(jobsDir: string, transcriptFile: string): Promise
 async function stallWatch(jobsDir: string, task: string, transcriptFile: string, agent: "opencode" | "pi", stallMs: number): Promise<void> {
   const st = await transcriptStats(jobsDir, transcriptFile);
   if (!st) return; // agent hasn't started yet — never stall during env/setup
-  const prev = stallState.get(jobsDir) as { size: number; mtime: number; frozenAt: number } | undefined;
-  if (!prev || prev.size !== st.size || prev.mtime !== st.mtime) {
-    stallState.set(jobsDir, { size: st.size, mtime: st.mtime, frozenAt: Date.now() });
+  const prev = stallState.get(jobsDir) as { size: number; frozenAt: number } | undefined;
+  // live-stream rewrites the host transcript every 10s (bumping mtime even when
+  // content is unchanged) — detect freeze by SIZE only.
+  if (!prev || prev.size !== st.size) {
+    stallState.set(jobsDir, { size: st.size, frozenAt: Date.now() });
     return;
   }
   const frozenFor = Date.now() - (prev.frozenAt ?? 0);
@@ -445,6 +490,7 @@ async function stallWatch(jobsDir: string, task: string, transcriptFile: string,
   const pattern = agent === "pi" ? "pi --print" : "opencode --model";
   console.log(`[cell] ${task}: transcript frozen — killing ${agent} in ${container}`);
   await Bun.$`docker exec ${container} pkill -f ${pattern}`.quiet().catch(() => {});
+  stallFlag.set(jobsDir, true); // triggers a fresh retry of this cell
   stallState.delete(jobsDir);
 }
 

@@ -154,3 +154,12 @@ $0.002397 exact).
   swe-bench cells 2-8 min with the timeout multiplier at 0.4.
 - **Rosetta is on** (colima `vz` + `rosetta: true`); native builds are arm64,
   rosetta only matters for amd64-only images harbor explicitly requests.
+
+## x86 images under rosetta (SWE-bench)
+
+SWE-bench eval images are amd64-only (`swebench/sweb.eval.x86_64.*`). Colima
+arm64 + harbor's compose build (daemon platform) fails with "no match for
+platform in manifest". Fix: patch harbor's
+`environments/docker/docker-compose-build.yaml` — add `platform: linux/amd64`
+to the `main` service (rosetta builds/runs it). Re-apply after every harbor
+reinstall.
