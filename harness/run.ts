@@ -127,12 +127,21 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
     const names = armSkillNames(c.arm);
     if (names.length) {
       const refs = names.map((n) => `~/.agents/skills/${n}/SKILL.md`);
+      // remote (signal): harbor uploads into ~/.agents/skills natively.
+      // local controls (caveman/ponytail): mount the staged dir there instead.
+      const mounts: { source: string; target: string }[] = [];
+      if (!useRemote && skills) {
+        for (const dir of skills) {
+          const name = path.basename(dir);
+          mounts.push({ source: dir, target: `/root/.agents/skills/${name}` });
+        }
+      }
       const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
       await fs.writeFile(
         agFile,
         `You MUST read and follow the Signal skill (${refs.join(" and ")}) before making any changes. It is mandatory for this task.\n`,
       );
-      alwaysOnCfg = { mounts: [], agHostFile: agFile, agTarget: agPath };
+      alwaysOnCfg = { mounts, agHostFile: agFile, agTarget: agPath };
     }
   }
 
