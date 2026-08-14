@@ -414,8 +414,11 @@ async function findContainer(task: string, jobsDir: string): Promise<string | nu
     const hit = list.find((n) => n.toLowerCase().includes(trialHash.toLowerCase()));
     if (hit) return hit;
   }
-  const slug = task.split("/").pop()!.toLowerCase();
-  return list.find((n) => n.toLowerCase().includes(slug)) ?? null;
+  // Never fall back to slug-matching: parallel cells on the same task slug all
+  // match, so `find` returns an arbitrary container — a misattribution bug in
+  // the live stream. Without the trial hash, do not stream rather than stream
+  // the wrong cell's transcript.
+  return null;
 }
 
 // Find `<task>__<hash>` dir under jobsDir; return the hash.
