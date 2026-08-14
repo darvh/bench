@@ -154,7 +154,7 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
     const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
     await fs.writeFile(
       agFile,
-      `Follow the guidance in ${refs.join(" and ")} (including their fragments/ directories) for this task.\n`,
+      `You MUST read and follow the guidance in ${refs.join(" and ")} (including their fragments/ directories) before making any changes. It is mandatory for this task.\n`,
     );
     alwaysOnCfg = { mounts, agHostFile: agFile, agTarget: agPath };
   }
