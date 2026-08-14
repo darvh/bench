@@ -147,10 +147,15 @@ export function armSkillNames(arm: ArmName): string[] {
 // Remote git skill sources for the same arms: harbor resolves org/name or a
 // tree URL, sparse-checkouts into cache, and mounts the skill dir.
 export function armSkillRefs(arm: ArmName, ref = "main"): string[] {
-  // only skills published in darvh/signal resolve from git; controls
-  // (caveman/ponytail) fall back to local staging
+  // each skill resolved from its published git repo, pinned to its subdir
   const refs: Record<string, string[]> = {
     signal: [`https://github.com/darvh/signal/tree/${ref}/signal`],
+    caveman: [`https://github.com/JuliusBrussee/caveman/tree/main/skills/caveman`],
+    ponytail: [`https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`],
+    "caveman+ponytail": [
+      `https://github.com/JuliusBrussee/caveman/tree/main/skills/caveman`,
+      `https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`,
+    ],
   };
   return refs[arm] ?? [];
 }
