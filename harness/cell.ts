@@ -376,6 +376,8 @@ async function skillWasUsed(jobsDir: string, names: string[], transcriptFile: st
         if (text.includes(`"tool":"skill"`) && text.includes(name)) return true;
         if (new RegExp(`"skill"[^}]*${name.replace("+", "\\+")}`, "i").test(text)) return true;
         if (new RegExp(`\\.${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) return true;
+        // native pi skill dir: ~/.agents/skills/<name>/SKILL.md
+        if (new RegExp(`agents/skills/${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) return true;
       }
     } catch {}
   }
