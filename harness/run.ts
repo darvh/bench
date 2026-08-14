@@ -143,11 +143,13 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
       if (nestedSkills.length) {
         for (const name of nestedSkills) {
           mounts.push({ source: path.join(dir, name), target: path.posix.join(cwd, `.${name}`) });
+          mounts.push({ source: path.join(dir, name), target: `/root/.agents/skills/${name}` });
           refs.push(`.${name}/SKILL.md`);
         }
       } else {
         const name = path.basename(dir);
         mounts.push({ source: dir, target: path.posix.join(cwd, `.${name}`) });
+        mounts.push({ source: dir, target: `/root/.agents/skills/${name}` });
         refs.push(`.${name}/SKILL.md`);
       }
     }
