@@ -142,21 +142,19 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
       }
       if (nestedSkills.length) {
         for (const name of nestedSkills) {
-          mounts.push({ source: path.join(dir, name), target: path.posix.join(cwd, `.${name}`) });
           mounts.push({ source: path.join(dir, name), target: `/root/.agents/skills/${name}` });
-          refs.push(`.${name}/SKILL.md`);
+          refs.push(`~/.agents/skills/${name}/SKILL.md`);
         }
       } else {
         const name = path.basename(dir);
-        mounts.push({ source: dir, target: path.posix.join(cwd, `.${name}`) });
         mounts.push({ source: dir, target: `/root/.agents/skills/${name}` });
-        refs.push(`.${name}/SKILL.md`);
+        refs.push(`~/.agents/skills/${name}/SKILL.md`);
       }
     }
     const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
     await fs.writeFile(
       agFile,
-      `You MUST read and follow the guidance in ${refs.join(" and ")} (including their fragments/ directories) before making any changes. It is mandatory for this task.\n`,
+      `You MUST read and follow the Signal skill (${refs.join(" and ")}) before making any changes. It is mandatory for this task.\n`,
     );
     alwaysOnCfg = { mounts, agHostFile: agFile, agTarget: agPath };
   }
