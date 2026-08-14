@@ -113,10 +113,12 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
   }
 
   const arm = ARMS[c.arm];
-  // skills source: staged host install (default) or remote git ref (harbor
-  // resolves org/name or tree URL, sparse-checkout into cache)
-  const skillsInfo = skillsSrc === "remote" ? undefined : await stageSkills(c.arm, path.join(JOBS_RUN, "skills", id));
-  const skills = skillsSrc === "remote" ? armSkillRefs(c.arm) : skillsInfo?.dirs;
+  // skills source: remote (git main — signal) preferred; arms without a git
+  // ref (caveman/ponytail controls) fall back to local staging
+  const refs = armSkillRefs(c.arm);
+  const useRemote = skillsSrc === "remote" && refs.length > 0;
+  const skillsInfo = useRemote ? undefined : await stageSkills(c.arm, path.join(JOBS_RUN, "skills", id));
+  const skills = useRemote ? refs : skillsInfo?.dirs;
 
   // always-on mode: skills arrive natively (harbor clones git refs / uploads
   // dirs into ~/.agents/skills); we add only the MUST AGENTS.md pointer.
