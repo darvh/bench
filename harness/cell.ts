@@ -92,15 +92,17 @@ function buildAgent(o: CellOpts): Record<string, unknown> {
 }
 
 export async function runCell(o: CellOpts): Promise<CellResult> {
-  // a watchdog kill (stall) means the run was cut short — retry fresh rather
-  // than scoring the partial state. Only a non-stalled completion counts.
+  // retry fresh when: the watchdog killed a stall, or the cell failed before
+  // doing real work (setup/config error) — only a non-stalled, worked attempt
+  // counts as final.
   const maxAttempts = 3;
   let last: CellResult | null = null;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const res = await runAttempt(o);
     last = res;
-    if (!res.stalled) return res;
-    console.log(`[cell] ${o.task} (${o.id}): stalled attempt ${attempt}/${maxAttempts} — retrying`);
+    const immediate = !res.ok && res.tokens === 0 && res.wallSec < 180;
+    if (!res.stalled && !immediate) return res;
+    console.log(`[cell] ${o.task} (${o.id}): ${res.stalled ? "stalled" : "immediate failure"} attempt ${attempt}/${maxAttempts} — retrying`);
   }
   return { ...last!, ok: false, verdict: "error", tokens: 0, costUsd: 0 };
 }
