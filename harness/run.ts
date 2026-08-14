@@ -73,10 +73,6 @@ function key(): string {
 
 const startedAt = new Date().toISOString();
 
-if (alwaysOn && skillsSrc === "remote") {
-  throw new Error("--mode=always-on requires --skills-src=local");
-}
-
 async function gitSha(dir: string): Promise<string> {
   try {
     const p = Bun.spawn({ cmd: ["git", "-C", dir, "rev-parse", "HEAD"], stdout: "pipe", stderr: "pipe" });
