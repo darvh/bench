@@ -139,7 +139,7 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
       const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
       await fs.writeFile(
         agFile,
-        `You MUST read and follow the Signal skill (${refs.join(" and ")}) before making any changes. It is mandatory for this task.\n`,
+        `MUST use the ${names.join(" and ")} skill (${refs.join(" and ")}).\n`,
       );
       alwaysOnCfg = { mounts, agHostFile: agFile, agTarget: agPath };
     }
