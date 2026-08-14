@@ -45,7 +45,7 @@ const taskScope = taskArg === "tb21" || TB21_TASKS.includes(taskArg) ? "tb21" : 
 const taskList = taskArg === "tb21" ? TB21_TASKS : taskArg.includes(",") ? taskArg.split(",").filter(Boolean) : [taskArg];
 const reps = Number(flag("--reps", "2"));
 const dry = args.includes("--dry-run");
-const skillsSrc = flag("--skills-src", "local"); // local (staged host install) | remote (git ref)
+const skillsSrc = flag("--skills-src", "remote"); // remote (git ref, main) | local (staged host install)
 const agentTimeoutMult = Number(flag("--agent-timeout-mult", "1.0"));
 const repFlag = flag("--rep", ""); // split children carry their rep for file naming
 const agent = (flag("--agent", "pi") === "opencode" ? "opencode" : "pi") as "opencode" | "pi";
@@ -122,41 +122,20 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
   const skillsInfo = skillsSrc === "remote" ? undefined : await stageSkills(c.arm, path.join(JOBS_RUN, "skills", id));
   const skills = skillsSrc === "remote" ? armSkillRefs(c.arm) : skillsInfo?.dirs;
 
-  // always-on mode: mount the whole skill dir(s) into the task cwd + an
-  // AGENTS.md pointer (the agent reads them every session — no opt-in tool)
+  // always-on mode: skills arrive natively (harbor clones git refs / uploads
+  // dirs into ~/.agents/skills); we add only the MUST AGENTS.md pointer.
   let alwaysOnCfg: NonNullable<Parameters<typeof runCell>[0]["alwaysOn"]> | undefined;
-  if (alwaysOn && skills) {
-    const cwd = path.dirname(agPath);
-    const mounts: { source: string; target: string }[] = [];
-    const refs: string[] = [];
-    for (const dir of skills) {
-      // stageSkills returns a root containing <skill>/SKILL.md. Mount each
-      // skill at its own expected path, including combined arms.
-      const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => []);
-      const nestedSkills: string[] = [];
-      for (const entry of entries) {
-        if (!entry.isDirectory()) continue;
-        if (await fs.access(path.join(dir, entry.name, "SKILL.md")).then(() => true).catch(() => false)) {
-          nestedSkills.push(entry.name);
-        }
-      }
-      if (nestedSkills.length) {
-        for (const name of nestedSkills) {
-          mounts.push({ source: path.join(dir, name), target: `/root/.agents/skills/${name}` });
-          refs.push(`~/.agents/skills/${name}/SKILL.md`);
-        }
-      } else {
-        const name = path.basename(dir);
-        mounts.push({ source: dir, target: `/root/.agents/skills/${name}` });
-        refs.push(`~/.agents/skills/${name}/SKILL.md`);
-      }
+  if (alwaysOn) {
+    const names = armSkillNames(c.arm);
+    if (names.length) {
+      const refs = names.map((n) => `~/.agents/skills/${n}/SKILL.md`);
+      const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
+      await fs.writeFile(
+        agFile,
+        `You MUST read and follow the Signal skill (${refs.join(" and ")}) before making any changes. It is mandatory for this task.\n`,
+      );
+      alwaysOnCfg = { mounts: [], agHostFile: agFile, agTarget: agPath };
     }
-    const agFile = path.join(JOBS_RUN, `${id}.AGENTS.md`);
-    await fs.writeFile(
-      agFile,
-      `You MUST read and follow the Signal skill (${refs.join(" and ")}) before making any changes. It is mandatory for this task.\n`,
-    );
-    alwaysOnCfg = { mounts, agHostFile: agFile, agTarget: agPath };
   }
 
   await register({ id, runId, task: c.task, arm: c.arm, pid: process.pid, outputLog: log, jobsDir });
@@ -173,7 +152,7 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
       log,
       apiKey: k,
       hint: arm.hint,
-      skills: alwaysOnCfg ? undefined : skills,
+      skills, // harbor injects skills natively (git refs or dirs) — always-on adds the MUST pointer
       skillNames: armSkillNames(c.arm),
       probeSkills,
       alwaysOn: alwaysOnCfg,
