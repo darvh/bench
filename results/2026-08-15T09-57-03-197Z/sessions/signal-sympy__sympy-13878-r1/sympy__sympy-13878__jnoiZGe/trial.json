@@ -1,0 +1,133 @@
+{
+    "id": "71491346-fe82-4ba5-8543-dca3b27c9d30",
+    "task_name": "swe-bench/sympy__sympy-13878",
+    "trial_name": "sympy__sympy-13878__jnoiZGe",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-15T09-57-03-197Z/signal-sympy__sympy-13878-r1/bench-signal-sympy__sympy-13878-r1/sympy__sympy-13878__jnoiZGe",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "sympy__sympy-13878",
+        "ref": "sha256:3115cfaeeba06f3edb434db3cb89e08a1d6fd93d2e51aff9afa47c17a9084745"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "9ae23d9a7d00655edb9ac3399b26f840292159cd94dc3acb7616a44d671be9a2",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/sympy__sympy-13878",
+            "ref": "sha256:3115cfaeeba06f3edb434db3cb89e08a1d6fd93d2e51aff9afa47c17a9084745",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "sympy__sympy-13878__jnoiZGe",
+        "trials_dir": "<home>/.cache/bench/2026-08-15T09-57-03-197Z/signal-sympy__sympy-13878-r1/bench-signal-sympy__sympy-13878-r1",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [
+                "<home>/.cache/harbor/skills/github.com/darvh/signal/364f8b350c8b11234ce16cb81835d4bf4c40d47a/signal"
+            ],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-15T09-57-03-197Z/signal-sympy__sympy-13878-r1.AGENTS.md",
+                    "target": "/testbed/AGENTS.md",
+                    "read_only": true
+                }
+            ],
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-15T09-57-03-197Z/signal-sympy__sympy-13878-r1/bench-stop.md"
+        ],
+        "job_id": "f90fc591-ee1e-4e92-bde9-17955c193730",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 2140845,
+        "n_cache_tokens": 2112896,
+        "n_output_tokens": 31219,
+        "cost_usd": 0.009285144400000002,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-15T09:57:08.579147Z",
+    "finished_at": "2026-08-15T10:09:33.920123Z",
+    "environment_setup": {
+        "started_at": "2026-08-15T09:57:08.620099Z",
+        "finished_at": "2026-08-15T09:57:12.874953Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-15T09:57:13.290615Z",
+        "finished_at": "2026-08-15T09:57:55.860910Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-15T09:57:55.861709Z",
+        "finished_at": "2026-08-15T10:08:42.428403Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-15T10:08:43.303510Z",
+        "finished_at": "2026-08-15T10:09:21.636899Z"
+    },
+    "step_results": null
+}
