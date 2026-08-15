@@ -491,11 +491,20 @@ async function stallWatch(jobsDir: string, task: string, transcriptFile: string,
   }
   const frozenFor = Date.now() - (prev.frozenAt ?? 0);
   if (frozenFor < stallMs) return;
-  // frozen past the stall window: kill the hung agent inside the container
+  // frozen past the stall window: confirm the agent process is actually dead
+  // before killing. A live agent running a long bash command (e.g. `timeout
+  // 900` test run) produces no transcript growth — killing it would be a false
+  // positive that discards real work.
   const container = await findContainer(task, jobsDir);
   if (!container) return;
   const pattern = agent === "pi" ? "pi --print" : "opencode --model";
-  console.log(`[cell] ${task}: transcript frozen — killing ${agent} in ${container}`);
+  const alive = await Bun.$`docker exec ${container} sh -c 'pgrep -f ${pattern} >/dev/null && echo alive || echo dead'`.text().catch(() => "dead");
+  if (alive.trim() === "alive") {
+    console.log(`[cell] ${task}: transcript idle but ${agent} process alive — long command, not a stall`);
+    stallState.set(jobsDir, { size: st.size, frozenAt: Date.now() }); // reset the window
+    return;
+  }
+  console.log(`[cell] ${task}: transcript frozen and ${agent} process dead — killing container process`);
   await Bun.$`docker exec ${container} pkill -f ${pattern}`.quiet().catch(() => {});
   stallFlag.set(jobsDir, true); // triggers a fresh retry of this cell
   stallState.delete(jobsDir);
