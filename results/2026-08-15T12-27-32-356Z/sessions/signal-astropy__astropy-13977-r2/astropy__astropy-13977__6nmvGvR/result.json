@@ -1,0 +1,43 @@
+{
+    "id": "c444d149-c1ba-4d21-80c4-82b5ce4111a2",
+    "started_at": "2026-08-15T18:13:11.259875",
+    "updated_at": "2026-08-15T18:26:33.359401",
+    "finished_at": "2026-08-15T18:26:33.359401",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 1,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pi__deepseek-v4-flash__swe-bench/swe-bench-verified": {
+                "n_trials": 1,
+                "n_errors": 1,
+                "metrics": [
+                    {
+                        "mean": 0.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "0.0": [
+                            "astropy__astropy-13977__6nmvGvR"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "NonZeroAgentExitCodeError": [
+                        "astropy__astropy-13977__6nmvGvR"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 450926,
+        "n_cache_tokens": 435712,
+        "n_output_tokens": 16307,
+        "cost_usd": 0.003957956800000001
+    }
+}

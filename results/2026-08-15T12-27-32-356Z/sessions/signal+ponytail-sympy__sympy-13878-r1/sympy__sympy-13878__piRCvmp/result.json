@@ -1,0 +1,43 @@
+{
+    "id": "9b85d1b7-a544-4b9c-be2c-2dc6f7db43a0",
+    "started_at": "2026-08-15T20:50:36.316683",
+    "updated_at": "2026-08-15T21:49:52.627891",
+    "finished_at": "2026-08-15T21:49:52.627891",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 1,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pi__deepseek-v4-flash__swe-bench/swe-bench-verified": {
+                "n_trials": 1,
+                "n_errors": 1,
+                "metrics": [
+                    {
+                        "mean": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "sympy__sympy-13878__piRCvmp"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "NonZeroAgentExitCodeError": [
+                        "sympy__sympy-13878__piRCvmp"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 3846198,
+        "n_cache_tokens": 3809920,
+        "n_output_tokens": 52725,
+        "cost_usd": 0.015254847999999998
+    }
+}

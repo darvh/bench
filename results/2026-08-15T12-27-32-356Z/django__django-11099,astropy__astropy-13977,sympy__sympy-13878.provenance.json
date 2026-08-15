@@ -1,0 +1,30 @@
+{
+  "runId": "2026-08-15T12-27-32-356Z",
+  "scope": "django__django-11099,astropy__astropy-13977,sympy__sympy-13878",
+  "model": "opencode-go/deepseek-v4-flash",
+  "variant": "high",
+  "arms": [
+    "naive",
+    "signal",
+    "ponytail",
+    "signal+ponytail"
+  ],
+  "taskList": [
+    "django__django-11099",
+    "astropy__astropy-13977",
+    "sympy__sympy-13878"
+  ],
+  "reps": 2,
+  "startedAt": "2026-08-15T12:27:32.357Z",
+  "finishedAt": "2026-08-15T17:01:06.088Z",
+  "harness": "darvh/bench@1d7857fff09d",
+  "skillSource": "github.com/darvh/signal (install.sh distribution path)",
+  "skillSha": "",
+  "pricePer1M": {
+    "input_miss": 0.14,
+    "input_hit": 0.0028,
+    "output": 0.28
+  },
+  "cells": 24,
+  "resultsFile": "django__django-11099,astropy__astropy-13977,sympy__sympy-13878.json"
+}
