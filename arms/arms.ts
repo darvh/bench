@@ -14,7 +14,7 @@ import path from "node:path";
 import { homedir } from "node:os";
 import { promises as fs } from "node:fs";
 
-export type ArmName = "naive" | "signal" | "caveman" | "ponytail" | "caveman+ponytail";
+export type ArmName = "naive" | "signal" | "caveman" | "ponytail" | "signal+ponytail" | "caveman+ponytail";
 
 export interface Arm {
   skills?: string[]; // skill dirs installed into the container (skill tool)
@@ -87,6 +87,7 @@ export async function ensureArmSkills(arm: ArmName): Promise<ArmSkills | undefin
     signal: ["signal"],
     caveman: ["caveman"],
     ponytail: ["ponytail"],
+    "signal+ponytail": ["signal", "ponytail"],
     "caveman+ponytail": ["caveman", "ponytail"],
   };
   const want = names[arm];
@@ -116,6 +117,7 @@ export const ARMS: Record<ArmName, Arm> = {
   signal: {},
   caveman: {},
   ponytail: {},
+  "signal+ponytail": {},
   "caveman+ponytail": {},
 };
 
@@ -139,6 +141,7 @@ export function armSkillNames(arm: ArmName): string[] {
     signal: ["signal"],
     caveman: ["caveman"],
     ponytail: ["ponytail"],
+    "signal+ponytail": ["signal", "ponytail"],
     "caveman+ponytail": ["caveman", "ponytail"],
   };
   return names[arm] ?? [];
@@ -152,6 +155,10 @@ export function armSkillRefs(arm: ArmName, ref = "main"): string[] {
     signal: [`https://github.com/darvh/signal/tree/${ref}/signal`],
     caveman: [`https://github.com/JuliusBrussee/caveman/tree/main/skills/caveman`],
     ponytail: [`https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`],
+    "signal+ponytail": [
+      `https://github.com/darvh/signal/tree/${ref}/signal`,
+      `https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`,
+    ],
     "caveman+ponytail": [
       `https://github.com/JuliusBrussee/caveman/tree/main/skills/caveman`,
       `https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`,
