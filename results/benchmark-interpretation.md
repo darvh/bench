@@ -11,7 +11,7 @@ What the numbers mean, how to read the charts, and what the data actually shows.
 - **Arms**: `no-skill` (no skill) · `signal` · `ponytail` · `signal+ponytail` (both skills)
 - **Mode**: always-on (skill content injected via AGENTS.md MUST directive — the skill is guaranteed present)
 - **Reps**: 2 per arm per task; 24 cells total; every cell `completion=normal`
-- **Model**: opencode-go `deepseek-v4-flash`, pricing fixed to provider-reported rates
+- **Model**: opencode-go `deepseek-v4-flash`, pricing at list (100%); opencode-go gives 50% off, so actual paid is half
 
 ## Charts
 

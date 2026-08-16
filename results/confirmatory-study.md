@@ -15,8 +15,10 @@ efficiency or correctness vs a no-skill baseline?
   seed **42**.
 - **Skills pinned**: signal `364f8b3` (== current main's SKILL.md), ponytail
   `main@2ed6c52`.
-- **Pricing**: provider-reported rates (input $0.07/M, cache $0.0014/M,
-  output $0.14/M); tokens are the primary metric.
+- **Pricing**: **LIST price (100%)** — input $0.14/M miss, $0.0028/M
+  cache-read, $0.28/M output. opencode-go runs a 50% off promotion, so the
+  actual amount paid is half of every `cost_usd` shown here; `provider_cost_usd`
+  records the real bill per cell. Tokens are the primary metric.
 
 ## Grid integrity
 

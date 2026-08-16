@@ -16,6 +16,9 @@ export const VARIANT = "high";
 export const GO_BASE_URL = "https://opencode.ai/zen/go/v1";
 
 // DeepSeek V4 Flash pricing (per 1M tokens): cache-miss input, cache-hit, output.
+// LIST price (100%). opencode-go offers 50% off — actual paid is half of these
+// numbers; the discount is noted in the report docs, not in the rates, so all
+// costs in the benchmark are on the same (list) scale.
 export const PRICE_INPUT_MISS_PER_1M = 0.14;
 export const PRICE_INPUT_HIT_PER_1M = 0.0028;
 export const PRICE_OUTPUT_PER_1M = 0.28;

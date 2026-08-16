@@ -17,7 +17,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.000674"
   },
   {
     "arm": "ponytail",
@@ -37,7 +38,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.000775"
   },
   {
     "arm": "ponytail",
@@ -57,7 +59,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.00085"
   },
   {
     "arm": "no-skill",
@@ -77,7 +80,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.001185"
   },
   {
     "arm": "no-skill",
@@ -97,7 +101,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.001553"
   },
   {
     "arm": "ponytail",
@@ -117,7 +122,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.000998"
   },
   {
     "arm": "no-skill",
@@ -137,7 +143,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.001226"
   },
   {
     "arm": "no-skill",
@@ -157,7 +164,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.001179"
   },
   {
     "arm": "signal",
@@ -177,7 +185,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001205"
   },
   {
     "arm": "ponytail",
@@ -197,7 +206,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001429"
   },
   {
     "arm": "signal",
@@ -217,7 +227,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.000813"
   },
   {
     "arm": "signal",
@@ -237,7 +248,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001481"
   },
   {
     "arm": "signal",
@@ -257,7 +269,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.00119"
   },
   {
     "arm": "ponytail",
@@ -277,7 +290,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.000686"
   },
   {
     "arm": "no-skill",
@@ -297,7 +311,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.001719"
   },
   {
     "arm": "ponytail",
@@ -317,7 +332,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001447"
   },
   {
     "arm": "no-skill",
@@ -337,7 +353,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.002739"
   },
   {
     "arm": "ponytail",
@@ -357,7 +374,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001205"
   },
   {
     "arm": "ponytail",
@@ -377,7 +395,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001381"
   },
   {
     "arm": "signal",
@@ -397,7 +416,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001705"
   },
   {
     "arm": "signal",
@@ -417,7 +437,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.002556"
   },
   {
     "arm": "no-skill",
@@ -437,7 +458,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.002525"
   },
   {
     "arm": "no-skill",
@@ -457,7 +479,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.003011"
   },
   {
     "arm": "signal",
@@ -477,7 +500,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001357"
   },
   {
     "arm": "ponytail",
@@ -497,7 +521,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.005163"
   },
   {
     "arm": "ponytail",
@@ -517,7 +542,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.005298"
   },
   {
     "arm": "no-skill",
@@ -537,7 +563,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.006957"
   },
   {
     "arm": "no-skill",
@@ -557,7 +584,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.006241"
   },
   {
     "arm": "no-skill",
@@ -577,7 +605,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.013058"
   },
   {
     "arm": "ponytail",
@@ -597,7 +626,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.010666"
   },
   {
     "arm": "no-skill",
@@ -617,7 +647,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.011789"
   },
   {
     "arm": "signal",
@@ -637,7 +668,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.007039"
   },
   {
     "arm": "signal",
@@ -657,7 +689,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.006673"
   },
   {
     "arm": "no-skill",
@@ -677,7 +710,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.004253"
   },
   {
     "arm": "signal",
@@ -697,7 +731,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.005132"
   },
   {
     "arm": "no-skill",
@@ -717,7 +752,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.004273"
   },
   {
     "arm": "ponytail",
@@ -737,7 +773,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.015569"
   },
   {
     "arm": "signal",
@@ -757,7 +794,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.002585"
   },
   {
     "arm": "signal",
@@ -777,7 +815,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.009444"
   },
   {
     "arm": "ponytail",
@@ -797,7 +836,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.002801"
   },
   {
     "arm": "ponytail",
@@ -817,7 +857,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.002191"
   },
   {
     "arm": "ponytail",
@@ -837,7 +878,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.002677"
   },
   {
     "arm": "no-skill",
@@ -857,7 +899,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.004062"
   },
   {
     "arm": "ponytail",
@@ -877,7 +920,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.002478"
   },
   {
     "arm": "no-skill",
@@ -897,7 +941,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.004891"
   },
   {
     "arm": "signal",
@@ -917,7 +962,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.003171"
   },
   {
     "arm": "signal",
@@ -937,7 +983,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.003434"
   },
   {
     "arm": "signal",
@@ -957,7 +1004,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.003586"
   },
   {
     "arm": "ponytail",
@@ -977,7 +1025,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001882"
   },
   {
     "arm": "no-skill",
@@ -997,7 +1046,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.0025"
   },
   {
     "arm": "no-skill",
@@ -1017,7 +1067,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.003599"
   },
   {
     "arm": "ponytail",
@@ -1037,7 +1088,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.002711"
   },
   {
     "arm": "signal",
@@ -1057,7 +1109,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.004566"
   },
   {
     "arm": "ponytail",
@@ -1077,7 +1130,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.004406"
   },
   {
     "arm": "signal",
@@ -1097,7 +1151,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.004326"
   },
   {
     "arm": "no-skill",
@@ -1117,7 +1172,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.004546"
   },
   {
     "arm": "ponytail",
@@ -1137,7 +1193,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001411"
   },
   {
     "arm": "no-skill",
@@ -1157,7 +1214,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.007686"
   },
   {
     "arm": "no-skill",
@@ -1177,7 +1235,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.004425"
   },
   {
     "arm": "signal",
@@ -1197,7 +1256,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.002369"
   },
   {
     "arm": "signal",
@@ -1217,7 +1277,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.002754"
   },
   {
     "arm": "no-skill",
@@ -1237,7 +1298,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.006418"
   },
   {
     "arm": "signal",
@@ -1257,7 +1319,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.004782"
   },
   {
     "arm": "ponytail",
@@ -1277,7 +1340,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.003907"
   },
   {
     "arm": "no-skill",
@@ -1297,7 +1361,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.003076"
   },
   {
     "arm": "ponytail",
@@ -1317,7 +1382,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.006816"
   },
   {
     "arm": "no-skill",
@@ -1337,7 +1403,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.002977"
   },
   {
     "arm": "signal",
@@ -1357,7 +1424,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001705"
   },
   {
     "arm": "ponytail",
@@ -1377,7 +1445,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.004499"
   },
   {
     "arm": "signal",
@@ -1397,7 +1466,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.002762"
   },
   {
     "arm": "signal",
@@ -1417,7 +1487,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.005661"
   },
   {
     "arm": "no-skill",
@@ -1437,7 +1508,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.002282"
   },
   {
     "arm": "signal",
@@ -1457,7 +1529,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001456"
   },
   {
     "arm": "ponytail",
@@ -1477,7 +1550,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.005512"
   },
   {
     "arm": "no-skill",
@@ -1497,7 +1571,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.00412"
   },
   {
     "arm": "ponytail",
@@ -1517,7 +1592,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001409"
   },
   {
     "arm": "ponytail",
@@ -1537,7 +1613,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.00238"
   },
   {
     "arm": "ponytail",
@@ -1557,7 +1634,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.001338"
   },
   {
     "arm": "no-skill",
@@ -1577,7 +1655,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.002897"
   },
   {
     "arm": "ponytail",
@@ -1597,7 +1676,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.000811"
   },
   {
     "arm": "signal",
@@ -1617,7 +1697,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001166"
   },
   {
     "arm": "no-skill",
@@ -1637,7 +1718,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.002881"
   },
   {
     "arm": "signal",
@@ -1657,7 +1739,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001481"
   },
   {
     "arm": "signal",
@@ -1677,7 +1760,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.001063"
   },
   {
     "arm": "ponytail",
@@ -1697,7 +1781,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.006409"
   },
   {
     "arm": "signal",
@@ -1717,7 +1802,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.00935"
   },
   {
     "arm": "no-skill",
@@ -1737,7 +1823,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.013508"
   },
   {
     "arm": "no-skill",
@@ -1757,7 +1844,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.01517"
   },
   {
     "arm": "ponytail",
@@ -1777,7 +1865,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.007105"
   },
   {
     "arm": "ponytail",
@@ -1797,7 +1886,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.016742"
   },
   {
     "arm": "signal",
@@ -1817,7 +1907,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.008154"
   },
   {
     "arm": "no-skill",
@@ -1837,7 +1928,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.015048"
   },
   {
     "arm": "ponytail",
@@ -1857,7 +1949,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.010071"
   },
   {
     "arm": "no-skill",
@@ -1877,7 +1970,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.001971"
   },
   {
     "arm": "signal",
@@ -1897,7 +1991,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.007278"
   },
   {
     "arm": "signal",
@@ -1917,7 +2012,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.009038"
   },
   {
     "arm": "no-skill",
@@ -1937,7 +2033,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.003904"
   },
   {
     "arm": "signal",
@@ -1957,7 +2054,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.003538"
   },
   {
     "arm": "no-skill",
@@ -1977,7 +2075,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.020373"
   },
   {
     "arm": "ponytail",
@@ -1997,7 +2096,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.002596"
   },
   {
     "arm": "ponytail",
@@ -2017,7 +2117,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.004959"
   },
   {
     "arm": "ponytail",
@@ -2037,7 +2138,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.005082"
   },
   {
     "arm": "no-skill",
@@ -2057,7 +2159,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.003402"
   },
   {
     "arm": "signal",
@@ -2077,7 +2180,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.002707"
   },
   {
     "arm": "no-skill",
@@ -2097,7 +2201,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "",
-    "skill_source": ""
+    "skill_source": "",
+    "provider_cost_usd": "0.004837"
   },
   {
     "arm": "ponytail",
@@ -2117,7 +2222,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-    "skill_source": "https://github.com/DietrichGebert/ponytail"
+    "skill_source": "https://github.com/DietrichGebert/ponytail",
+    "provider_cost_usd": "0.004273"
   },
   {
     "arm": "signal",
@@ -2137,7 +2243,8 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.004301"
   },
   {
     "arm": "signal",
@@ -2157,6 +2264,7 @@
     "task_ref": "",
     "started": "2026-08-16T05:04:57.242Z",
     "skill_sha": "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-    "skill_source": "https://github.com/darvh/signal"
+    "skill_source": "https://github.com/darvh/signal",
+    "provider_cost_usd": "0.003844"
   }
 ]
