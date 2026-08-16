@@ -147,13 +147,15 @@ export function armSkillNames(arm: ArmName): string[] {
   return names[arm] ?? [];
 }
 
-// Pinned skill commits for the study. Exact SHAs, not branch names — a
-// future push to main must not change what a given study measured. Bump these
-// deliberately and record the new SHA in the run's provenance.
+// Pinned skill commits for the study. harbor's tree/<ref> parser resolves the
+// ref via `git ls-remote` refname matching, which rejects raw SHAs — so each
+// pin is a dedicated branch (refs/heads/study-pin-<sha>) pushed to the repo at
+// exactly that commit. A future push to main cannot change what a study
+// measured. Bump deliberately and record the new SHA in the run's provenance.
 export const SKILL_PINS: Record<string, string> = {
-  signal: "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
-  ponytail: "2ed6c52c9d7e5e56942508591085fd45dea277d3",
-  caveman: "c72984e4392c7a154e55c11dbf445f01ce5c35d4",
+  signal: "study-pin-364f8b3", // -> 364f8b350c8b11234ce16cb81835d4bf4c40d47a
+  ponytail: "main", // -> 2ed6c52c9d7e5e56942508591085fd45dea277d3 (branch, resolves via ls-remote)
+  caveman: "main",
 };
 
 // Remote git skill sources for the same arms: harbor resolves org/name or a
