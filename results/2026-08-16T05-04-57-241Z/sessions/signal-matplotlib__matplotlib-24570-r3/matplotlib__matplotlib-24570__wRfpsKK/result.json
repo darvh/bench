@@ -1,0 +1,39 @@
+{
+    "id": "10f42efc-c628-484e-94ef-38150edc4cc1",
+    "started_at": "2026-08-16T12:18:11.141859",
+    "updated_at": "2026-08-16T12:29:06.822715",
+    "finished_at": "2026-08-16T12:29:06.822715",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pi__deepseek-v4-flash__swe-bench/swe-bench-verified": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "matplotlib__matplotlib-24570__wRfpsKK"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 617383,
+        "n_cache_tokens": 605440,
+        "n_output_tokens": 18871,
+        "cost_usd": 0.0043255659999999994
+    }
+}

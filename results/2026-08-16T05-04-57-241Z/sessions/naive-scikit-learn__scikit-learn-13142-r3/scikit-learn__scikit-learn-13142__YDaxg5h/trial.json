@@ -1,0 +1,124 @@
+{
+    "id": "e3c15029-07a6-4300-8c50-bb7a260279da",
+    "task_name": "swe-bench/scikit-learn__scikit-learn-13142",
+    "trial_name": "scikit-learn__scikit-learn-13142__YDaxg5h",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-scikit-learn__scikit-learn-13142-r3/bench-naive-scikit-learn__scikit-learn-13142-r3/scikit-learn__scikit-learn-13142__YDaxg5h",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "scikit-learn__scikit-learn-13142",
+        "ref": "sha256:826f144147244f46cc332c07dd41532dd7d2276900c4c7a3ee60f99dd3d61f22"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "afb39d3186725b05891bb0dc9ec0fcf0ae6a35e3d693178411e7469c9409b0e8",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/scikit-learn__scikit-learn-13142",
+            "ref": "sha256:826f144147244f46cc332c07dd41532dd7d2276900c4c7a3ee60f99dd3d61f22",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "scikit-learn__scikit-learn-13142__YDaxg5h",
+        "trials_dir": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-scikit-learn__scikit-learn-13142-r3/bench-naive-scikit-learn__scikit-learn-13142-r3",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-scikit-learn__scikit-learn-13142-r3/bench-stop.md"
+        ],
+        "job_id": "1a6a1cfd-ce92-4920-964d-75c95326b4f5",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 241862,
+        "n_cache_tokens": 234240,
+        "n_output_tokens": 10147,
+        "cost_usd": 0.002282056,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-16T07:17:00.106182Z",
+    "finished_at": "2026-08-16T07:22:25.573116Z",
+    "environment_setup": {
+        "started_at": "2026-08-16T07:17:00.146152Z",
+        "finished_at": "2026-08-16T07:18:14.032002Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-16T07:18:14.032413Z",
+        "finished_at": "2026-08-16T07:19:10.870448Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-16T07:19:10.871248Z",
+        "finished_at": "2026-08-16T07:21:26.152174Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-16T07:21:26.991728Z",
+        "finished_at": "2026-08-16T07:22:13.166291Z"
+    },
+    "step_results": null
+}

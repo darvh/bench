@@ -1,0 +1,39 @@
+{
+    "id": "dc0ae5a0-76db-4861-9b36-af197867ea4c",
+    "started_at": "2026-08-16T10:38:23.083712",
+    "updated_at": "2026-08-16T10:41:26.730481",
+    "finished_at": "2026-08-16T10:41:26.730481",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pi__deepseek-v4-flash__swe-bench/swe-bench-verified": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "django__django-11179__Rys6iLZ"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 162447,
+        "n_cache_tokens": 155392,
+        "n_output_tokens": 5126,
+        "cost_usd": 0.0014290388000000002
+    }
+}

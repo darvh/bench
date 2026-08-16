@@ -1,0 +1,133 @@
+{
+    "id": "26f36822-462c-4507-9545-c34048b27ffe",
+    "task_name": "swe-bench/psf__requests-6028",
+    "trial_name": "psf__requests-6028__2jxojjA",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-psf__requests-6028-r3/bench-signal-psf__requests-6028-r3/psf__requests-6028__2jxojjA",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "psf__requests-6028",
+        "ref": "sha256:700c19626aecbb9d0d0a18f186ac4383035594abe11a306e17b7b2e3a70f0cf1"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "1be502d1a1bd7f780980864f6c0f569329f024e4ec3c8e82bf530c22d0d7a863",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/psf__requests-6028",
+            "ref": "sha256:700c19626aecbb9d0d0a18f186ac4383035594abe11a306e17b7b2e3a70f0cf1",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "psf__requests-6028__2jxojjA",
+        "trials_dir": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-psf__requests-6028-r3/bench-signal-psf__requests-6028-r3",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [
+                "<home>/.cache/harbor/skills/github.com/darvh/signal/364f8b350c8b11234ce16cb81835d4bf4c40d47a/signal"
+            ],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-psf__requests-6028-r3.AGENTS.md",
+                    "target": "/testbed/AGENTS.md",
+                    "read_only": true
+                }
+            ],
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-psf__requests-6028-r3/bench-stop.md"
+        ],
+        "job_id": "aa0c101b-53bf-4e4f-83da-3a7108efd4ba",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 225919,
+        "n_cache_tokens": 216704,
+        "n_output_tokens": 5401,
+        "cost_usd": 0.0017045756000000003,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-16T07:12:47.897185Z",
+    "finished_at": "2026-08-16T07:16:51.265244Z",
+    "environment_setup": {
+        "started_at": "2026-08-16T07:12:47.936031Z",
+        "finished_at": "2026-08-16T07:13:12.963655Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-16T07:13:13.466842Z",
+        "finished_at": "2026-08-16T07:14:10.586020Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-16T07:14:10.588256Z",
+        "finished_at": "2026-08-16T07:16:13.736870Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-16T07:16:14.623372Z",
+        "finished_at": "2026-08-16T07:16:38.076708Z"
+    },
+    "step_results": null
+}

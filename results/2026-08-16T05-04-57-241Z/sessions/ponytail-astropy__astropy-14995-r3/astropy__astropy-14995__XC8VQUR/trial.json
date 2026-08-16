@@ -1,0 +1,133 @@
+{
+    "id": "c97db907-9c81-47c9-848e-91aa6c1e96a0",
+    "task_name": "swe-bench/astropy__astropy-14995",
+    "trial_name": "astropy__astropy-14995__XC8VQUR",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-16T05-04-57-241Z/ponytail-astropy__astropy-14995-r3/bench-ponytail-astropy__astropy-14995-r3/astropy__astropy-14995__XC8VQUR",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "astropy__astropy-14995",
+        "ref": "sha256:4dc7e5a9ad7ce8e3538b706dbb3ab1ad2adcdec4552e76681e0be270f0012eb9"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "0228883cb2972b9f0d6d7449e37603ae707b40a64fe1530dd37cb49fc9fb4b85",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/astropy__astropy-14995",
+            "ref": "sha256:4dc7e5a9ad7ce8e3538b706dbb3ab1ad2adcdec4552e76681e0be270f0012eb9",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "astropy__astropy-14995__XC8VQUR",
+        "trials_dir": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/ponytail-astropy__astropy-14995-r3/bench-ponytail-astropy__astropy-14995-r3",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [
+                "<home>/.cache/harbor/skills/github.com/DietrichGebert/ponytail/2ed6c52c9d7e5e56942508591085fd45dea277d3/skills/ponytail"
+            ],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/ponytail-astropy__astropy-14995-r3.AGENTS.md",
+                    "target": "/testbed/AGENTS.md",
+                    "read_only": true
+                }
+            ],
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-16T05-04-57-241Z/ponytail-astropy__astropy-14995-r3/bench-stop.md"
+        ],
+        "job_id": "cccf8fd4-385e-44b2-9d7b-56ed4cf26c3f",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 374860,
+        "n_cache_tokens": 357376,
+        "n_output_tokens": 7688,
+        "cost_usd": 0.0028005264000000004,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-16T06:24:06.013179Z",
+    "finished_at": "2026-08-16T06:29:46.988792Z",
+    "environment_setup": {
+        "started_at": "2026-08-16T06:24:06.071984Z",
+        "finished_at": "2026-08-16T06:24:10.068037Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-16T06:24:10.579958Z",
+        "finished_at": "2026-08-16T06:24:54.862861Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-16T06:24:54.863490Z",
+        "finished_at": "2026-08-16T06:27:21.711148Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-16T06:27:22.459067Z",
+        "finished_at": "2026-08-16T06:29:34.326713Z"
+    },
+    "step_results": null
+}

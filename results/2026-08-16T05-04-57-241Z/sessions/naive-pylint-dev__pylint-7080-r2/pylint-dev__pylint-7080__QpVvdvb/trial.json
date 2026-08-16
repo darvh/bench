@@ -1,0 +1,124 @@
+{
+    "id": "95c529bd-8f2a-4f5a-8cec-9ae243296bc2",
+    "task_name": "swe-bench/pylint-dev__pylint-7080",
+    "trial_name": "pylint-dev__pylint-7080__QpVvdvb",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-pylint-dev__pylint-7080-r2/bench-naive-pylint-dev__pylint-7080-r2/pylint-dev__pylint-7080__QpVvdvb",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "pylint-dev__pylint-7080",
+        "ref": "sha256:b8ff68533a0a764863901e1486f82843cd16d34e3855564c35f6068edd5b2448"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "d53586d4f27d8cc9abc9b1dcc1a3b8deefff4d173ec666a8ef836142d1c20db5",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/pylint-dev__pylint-7080",
+            "ref": "sha256:b8ff68533a0a764863901e1486f82843cd16d34e3855564c35f6068edd5b2448",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "pylint-dev__pylint-7080__QpVvdvb",
+        "trials_dir": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-pylint-dev__pylint-7080-r2/bench-naive-pylint-dev__pylint-7080-r2",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-pylint-dev__pylint-7080-r2/bench-stop.md"
+        ],
+        "job_id": "c45bf9ac-e508-407f-b327-71a977ebd73c",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 3820044,
+        "n_cache_tokens": 3789568,
+        "n_output_tokens": 31073,
+        "cost_usd": 0.011788935200000003,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-16T05:55:54.858009Z",
+    "finished_at": "2026-08-16T06:07:02.009667Z",
+    "environment_setup": {
+        "started_at": "2026-08-16T05:55:54.900215Z",
+        "finished_at": "2026-08-16T05:55:58.827507Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-16T05:55:58.827685Z",
+        "finished_at": "2026-08-16T05:56:39.684586Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-16T05:56:39.685062Z",
+        "finished_at": "2026-08-16T06:06:13.540347Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-16T06:06:14.233834Z",
+        "finished_at": "2026-08-16T06:06:49.568876Z"
+    },
+    "step_results": null
+}

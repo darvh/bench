@@ -1,0 +1,133 @@
+{
+    "id": "94a92617-2076-4210-b0c6-ba724cab951f",
+    "task_name": "swe-bench/astropy__astropy-14995",
+    "trial_name": "astropy__astropy-14995__LHEm49r",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-astropy__astropy-14995-r2/bench-signal-astropy__astropy-14995-r2/astropy__astropy-14995__LHEm49r",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "astropy__astropy-14995",
+        "ref": "sha256:4dc7e5a9ad7ce8e3538b706dbb3ab1ad2adcdec4552e76681e0be270f0012eb9"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "0228883cb2972b9f0d6d7449e37603ae707b40a64fe1530dd37cb49fc9fb4b85",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/astropy__astropy-14995",
+            "ref": "sha256:4dc7e5a9ad7ce8e3538b706dbb3ab1ad2adcdec4552e76681e0be270f0012eb9",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "astropy__astropy-14995__LHEm49r",
+        "trials_dir": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-astropy__astropy-14995-r2/bench-signal-astropy__astropy-14995-r2",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [
+                "<home>/.cache/harbor/skills/github.com/darvh/signal/364f8b350c8b11234ce16cb81835d4bf4c40d47a/signal"
+            ],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-astropy__astropy-14995-r2.AGENTS.md",
+                    "target": "/testbed/AGENTS.md",
+                    "read_only": true
+                }
+            ],
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-astropy__astropy-14995-r2/bench-stop.md"
+        ],
+        "job_id": "b3ca2cc2-18ae-40a1-bafb-2f01e6d60765",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 314936,
+        "n_cache_tokens": 297216,
+        "n_output_tokens": 6635,
+        "cost_usd": 0.0025854024000000002,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-16T06:22:56.967360Z",
+    "finished_at": "2026-08-16T06:28:14.991370Z",
+    "environment_setup": {
+        "started_at": "2026-08-16T06:22:57.031940Z",
+        "finished_at": "2026-08-16T06:23:00.920332Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-16T06:23:01.407595Z",
+        "finished_at": "2026-08-16T06:23:48.262491Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-16T06:23:48.263069Z",
+        "finished_at": "2026-08-16T06:25:54.730521Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-16T06:25:55.545442Z",
+        "finished_at": "2026-08-16T06:28:02.027582Z"
+    },
+    "step_results": null
+}

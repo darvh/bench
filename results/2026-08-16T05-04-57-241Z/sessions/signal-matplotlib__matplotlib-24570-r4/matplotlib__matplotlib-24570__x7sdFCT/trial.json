@@ -1,0 +1,133 @@
+{
+    "id": "251d9b35-8dcc-4c34-82c7-6f7dec49f8e5",
+    "task_name": "swe-bench/matplotlib__matplotlib-24570",
+    "trial_name": "matplotlib__matplotlib-24570__x7sdFCT",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-matplotlib__matplotlib-24570-r4/bench-signal-matplotlib__matplotlib-24570-r4/matplotlib__matplotlib-24570__x7sdFCT",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "matplotlib__matplotlib-24570",
+        "ref": "sha256:c68ad152da881a683bf8113a448785c0d0922fafc142fd9ff423af586974afb6"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "029ce267c0df4017281c598035131fb8ca1896369a893ca23b603a0ecc11f97b",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/matplotlib__matplotlib-24570",
+            "ref": "sha256:c68ad152da881a683bf8113a448785c0d0922fafc142fd9ff423af586974afb6",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "matplotlib__matplotlib-24570__x7sdFCT",
+        "trials_dir": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-matplotlib__matplotlib-24570-r4/bench-signal-matplotlib__matplotlib-24570-r4",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [
+                "<home>/.cache/harbor/skills/github.com/darvh/signal/364f8b350c8b11234ce16cb81835d4bf4c40d47a/signal"
+            ],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-matplotlib__matplotlib-24570-r4.AGENTS.md",
+                    "target": "/testbed/AGENTS.md",
+                    "read_only": true
+                }
+            ],
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-16T05-04-57-241Z/signal-matplotlib__matplotlib-24570-r4/bench-stop.md"
+        ],
+        "job_id": "89cdcf5c-04d4-4897-9711-4466d4d7aca5",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 879960,
+        "n_cache_tokens": 861568,
+        "n_output_tokens": 16349,
+        "cost_usd": 0.0047824952,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-16T06:59:19.839817Z",
+    "finished_at": "2026-08-16T07:08:29.052627Z",
+    "environment_setup": {
+        "started_at": "2026-08-16T06:59:19.884779Z",
+        "finished_at": "2026-08-16T06:59:24.209029Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-16T06:59:24.895697Z",
+        "finished_at": "2026-08-16T07:01:28.320834Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-16T07:01:28.321801Z",
+        "finished_at": "2026-08-16T07:05:41.864277Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-16T07:05:42.664324Z",
+        "finished_at": "2026-08-16T07:08:16.623784Z"
+    },
+    "step_results": null
+}

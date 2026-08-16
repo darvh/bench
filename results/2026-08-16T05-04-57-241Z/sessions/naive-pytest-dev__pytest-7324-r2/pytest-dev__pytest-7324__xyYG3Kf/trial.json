@@ -1,0 +1,124 @@
+{
+    "id": "dd87375d-3c94-431b-8352-e7a9e3f76cfe",
+    "task_name": "swe-bench/pytest-dev__pytest-7324",
+    "trial_name": "pytest-dev__pytest-7324__xyYG3Kf",
+    "trial_uri": "file:///<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-pytest-dev__pytest-7324-r2/bench-naive-pytest-dev__pytest-7324-r2/pytest-dev__pytest-7324__xyYG3Kf",
+    "task_id": {
+        "org": "swe-bench",
+        "name": "pytest-dev__pytest-7324",
+        "ref": "sha256:9ef3b1386b7267648c3bcf821c0cb589a41984d40f3c67433864d00ee3e4c7d0"
+    },
+    "source": "swe-bench/swe-bench-verified",
+    "task_checksum": "cce1c84b1f76a257575794e84aed532ffe1cf08473a8b038f41914609e36ad7e",
+    "config": {
+        "task": {
+            "path": null,
+            "git_url": null,
+            "git_commit_id": null,
+            "name": "swe-bench/pytest-dev__pytest-7324",
+            "ref": "sha256:9ef3b1386b7267648c3bcf821c0cb589a41984d40f3c67433864d00ee3e4c7d0",
+            "overwrite": false,
+            "download_dir": null,
+            "source": "swe-bench/swe-bench-verified"
+        },
+        "trial_name": "pytest-dev__pytest-7324__xyYG3Kf",
+        "trials_dir": "<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-pytest-dev__pytest-7324-r2/bench-naive-pytest-dev__pytest-7324-r2",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 1.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "pi",
+            "import_path": null,
+            "model_name": "opencode-go/deepseek-v4-flash",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "thinking": "high"
+            },
+            "env": {
+                "OPENCODE_API_KEY": "${OPENCODE_API_KEY}"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "<home>/.cache/bench/2026-08-16T05-04-57-241Z/naive-pytest-dev__pytest-7324-r2/bench-stop.md"
+        ],
+        "job_id": "932a6be3-75cf-41a0-b0af-a1380fc4913d",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "pi",
+        "version": "0.84.2",
+        "model_info": {
+            "name": "deepseek-v4-flash",
+            "provider": "opencode-go"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 1020290,
+        "n_cache_tokens": 1003648,
+        "n_output_tokens": 16192,
+        "cost_usd": 0.004836927199999999,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-08-16T08:06:23.856349Z",
+    "finished_at": "2026-08-16T08:12:21.120301Z",
+    "environment_setup": {
+        "started_at": "2026-08-16T08:06:23.904231Z",
+        "finished_at": "2026-08-16T08:06:27.698443Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-16T08:06:27.698566Z",
+        "finished_at": "2026-08-16T08:07:09.458664Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-16T08:07:09.459189Z",
+        "finished_at": "2026-08-16T08:11:48.076410Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-16T08:11:48.831985Z",
+        "finished_at": "2026-08-16T08:12:08.776646Z"
+    },
+    "step_results": null
+}

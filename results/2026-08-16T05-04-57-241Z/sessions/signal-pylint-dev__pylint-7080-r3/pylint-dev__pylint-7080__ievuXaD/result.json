@@ -1,0 +1,39 @@
+{
+    "id": "410ebeda-0bbf-4b64-af62-d19ab4693705",
+    "started_at": "2026-08-16T11:31:50.227226",
+    "updated_at": "2026-08-16T11:39:05.852139",
+    "finished_at": "2026-08-16T11:39:05.852139",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 0,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pi__deepseek-v4-flash__swe-bench/swe-bench-verified": {
+                "n_trials": 1,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "pylint-dev__pylint-7080__ievuXaD"
+                        ]
+                    }
+                },
+                "exception_stats": {}
+            }
+        },
+        "n_input_tokens": 1852777,
+        "n_cache_tokens": 1830912,
+        "n_output_tokens": 21037,
+        "cost_usd": 0.0070390068
+    }
+}
