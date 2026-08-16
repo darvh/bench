@@ -1,0 +1,32 @@
+[
+  {
+    "arm": "ponytail",
+    "task": "sympy__sympy-13878",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "false",
+    "tokens": "3355597",
+    "cost_usd": "0.026691",
+    "wall": "1735",
+    "task_ref": "",
+    "started": "2026-08-15T17:47:31.179Z",
+    "skill_sha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
+    "skill_source": "https://github.com/DietrichGebert/ponytail"
+  },
+  {
+    "arm": "naive",
+    "task": "sympy__sympy-13878",
+    "rep": "1",
+    "verdict": "pass",
+    "completion": "normal",
+    "skill_used": "false",
+    "tokens": "6848277",
+    "cost_usd": "0.041065",
+    "wall": "2354",
+    "task_ref": "",
+    "started": "2026-08-15T17:47:31.179Z",
+    "skill_sha": "",
+    "skill_source": ""
+  }
+]

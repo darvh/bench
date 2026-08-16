@@ -1,0 +1,26 @@
+{
+  "runId": "2026-08-15T17-47-31-176Z",
+  "scope": "sympy__sympy-13878",
+  "model": "opencode-go/deepseek-v4-flash",
+  "variant": "high",
+  "arms": [
+    "naive",
+    "ponytail"
+  ],
+  "taskList": [
+    "sympy__sympy-13878"
+  ],
+  "reps": 1,
+  "startedAt": "2026-08-15T17:47:31.179Z",
+  "finishedAt": "2026-08-15T18:26:45.204Z",
+  "harness": "darvh/bench@6e8a44ef0e3e",
+  "skillSource": "github.com/darvh/signal (install.sh distribution path)",
+  "skillSha": "2ed6c52c9d7e5e56942508591085fd45dea277d3",
+  "pricePer1M": {
+    "input_miss": 0.14,
+    "input_hit": 0.0028,
+    "output": 0.28
+  },
+  "cells": 2,
+  "resultsFile": "sympy__sympy-13878.json"
+}
