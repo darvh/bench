@@ -26,12 +26,16 @@ export interface CellResult {
   completion: "normal" | "terminated" | "timeout" | "error";
   tokens: number;
   costUsd: number;
-  skillUsed: boolean;
+  skillUsed: boolean; // any skill read
+  skillUsage: Record<string, boolean>; // per-skill: { signal: true, ponytail: false }
   taskRef: string;
   wallSec: number;
   skillSha: string; // harbor-recorded provenance: git commit sha or content digest
   skillSource: string;
   stalled: boolean; // watchdog killed the agent — retry, don't score
+  attempts: number; // attempts consumed incl. retries (1 = clean)
+  discardedCostUsd: number; // tokens/cost burned by stalled/immediate-failed attempts that were discarded
+  exceptionType: string; // trial exception_type when completion != normal
 }
 
 export interface CellOpts {
@@ -97,14 +101,19 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
   // counts as final.
   const maxAttempts = 3;
   let last: CellResult | null = null;
+  let discardedCostUsd = 0;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const res = await runAttempt(o);
     last = res;
     const immediate = !res.ok && res.tokens === 0 && res.wallSec < 180;
-    if (!res.stalled && !immediate) return res;
+    if (!res.stalled && !immediate) return { ...res, attempts: attempt, discardedCostUsd };
+    // this attempt is being discarded (stall kill or immediate failure): its
+    // tokens/cost never contributed to a scored result — preserve them so the
+    // report can show the true cost incl. retries.
+    discardedCostUsd += res.costUsd;
     console.log(`[cell] ${o.task} (${o.id}): ${res.stalled ? "stalled" : "immediate failure"} attempt ${attempt}/${maxAttempts} — retrying`);
   }
-  return { ...last!, ok: false, verdict: "error", tokens: 0, costUsd: 0 };
+  return { ...last!, ok: false, verdict: "error", tokens: 0, costUsd: 0, attempts: maxAttempts, discardedCostUsd };
 }
 
 async function runAttempt(o: CellOpts): Promise<CellResult> {
@@ -220,10 +229,14 @@ async function runAttempt(o: CellOpts): Promise<CellResult> {
   const completion = await trialCompletion(o.jobsDir, code);
   const tokens = await jobTokens(o.jobsDir);
   const costUsd = await jobCostUsd(o.jobsDir);
-  const skillUsed = o.skillNames?.length ? await skillWasUsed(o.jobsDir, o.skillNames, transcriptName(o.agent)) : false;
+  const skillUsage = o.skillNames?.length
+    ? await skillWasUsedPerSkill(o.jobsDir, o.skillNames, transcriptName(o.agent))
+    : {};
+  const skillUsed = Object.values(skillUsage).some(Boolean);
   const taskRef = await jobTaskRef(o.jobsDir);
   const prov = await skillProvenance(o.jobsDir);
-  return { ok: code === 0, verdict, completion, tokens, costUsd, skillUsed, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source, stalled };
+  const exceptionType = await trialExceptionType(o.jobsDir);
+  return { ok: code === 0, verdict, completion, tokens, costUsd, skillUsed, skillUsage, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source, stalled, attempts: 1, discardedCostUsd: 0, exceptionType };
 }
 
 // ---- result.json discovery ----
@@ -370,20 +383,35 @@ async function archiveTranscripts(jobsDir: string, archive: string, id: string, 
   }
 }
 
-async function skillWasUsed(jobsDir: string, names: string[], transcriptFile: string): Promise<boolean> {
+// Per-skill usage: which named skills the transcript shows the agent actually
+// loaded (read the SKILL.md). Returns { signal: true, ponytail: false, ... }.
+// The combined arm is only marked "both used" when BOTH flags are true.
+async function skillWasUsedPerSkill(jobsDir: string, names: string[], transcriptFile: string): Promise<Record<string, boolean>> {
+  const usage: Record<string, boolean> = {};
   for (const dir of await trialDirs(jobsDir)) {
     try {
       const text = await fs.readFile(path.join(dir, "agent", transcriptFile), "utf8");
       for (const name of names) {
-        if (text.includes(`"tool":"skill"`) && text.includes(name)) return true;
-        if (new RegExp(`"skill"[^}]*${name.replace("+", "\\+")}`, "i").test(text)) return true;
-        if (new RegExp(`\\.${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) return true;
+        if (usage[name]) continue; // already proven used for this skill
+        if (text.includes(`"tool":"skill"`) && text.includes(name)) { usage[name] = true; continue; }
+        if (new RegExp(`"skill"[^}]*${name.replace("+", "\\+")}`, "i").test(text)) { usage[name] = true; continue; }
+        if (new RegExp(`\\.${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) { usage[name] = true; continue; }
         // native pi skill dir: ~/.agents/skills/<name>/SKILL.md
-        if (new RegExp(`agents/skills/${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) return true;
+        if (new RegExp(`agents/skills/${name}[/\\][^"\\n]*SKILL\\.md`, "i").test(text)) { usage[name] = true; continue; }
       }
     } catch {}
   }
-  return false;
+  return usage;
+}
+
+async function trialExceptionType(jobsDir: string): Promise<string> {
+  for (const dir of await trialDirs(jobsDir)) {
+    try {
+      const d = JSON.parse(await fs.readFile(path.join(dir, "result.json"), "utf8"));
+      return d.exception_info?.exception_type ?? "";
+    } catch {}
+  }
+  return "";
 }
 
 // Did the agent signal completion (final answer) before any stall? pi emits

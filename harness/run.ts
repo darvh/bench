@@ -84,10 +84,32 @@ async function gitSha(dir: string): Promise<string> {
   }
 }
 
+// Task-major blocks: every (arm × rep) of a task runs before the next task,
+// so a time-varying confound affects all conditions of a task together. Within
+// each task block the (arm, rep) pairs are shuffled with a recorded seed to
+// remove arm-order bias (run.ts previously scheduled arm-first: naive, signal,
+// caveman, ... every task — order confounded with task).
+const seed = Number(flag("--seed", "42"));
 const cells: { arm: ArmName; task: string; rep: number }[] = [];
-for (const arm of arms) for (const task of taskList) for (let r = 1; r <= reps; r++) cells.push({ arm, task, rep: r });
+for (const task of taskList) {
+  const block: { arm: ArmName; task: string; rep: number }[] = [];
+  for (const arm of arms) for (let r = 1; r <= reps; r++) block.push({ arm, task, rep: r });
+  // deterministic shuffle (mulberry32)
+  let s = seed >>> 0;
+  const rnd = () => {
+    s |= 0; s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  for (let i = block.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [block[i], block[j]] = [block[j], block[i]];
+  }
+  cells.push(...block);
+}
 
-console.log(`bench — model=${MODEL} variant=${VARIANT} run=${runId} arms=${arms.join(",")} tasks=${taskScope} reps=${reps}${dry ? " (dry-run)" : ""}`);
+console.log(`bench — model=${MODEL} variant=${VARIANT} run=${runId} arms=${arms.join(",")} tasks=${taskScope} reps=${reps} seed=${seed}${dry ? " (dry-run)" : ""}`);
 const k = dry ? "" : key();
 const rows: Record<string, string>[] = [];
 const { register, heartbeat, setStatus, loadState, isAlive } = await import("./monitor");
@@ -181,7 +203,10 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
 
     rows.push({
     arm: c.arm, task: c.task, rep: String(c.rep), verdict: res.verdict,
-    completion: res.completion, skill_used: String(res.skillUsed), tokens: String(res.tokens), cost_usd: String(res.costUsd),
+    completion: res.completion, skill_used: String(res.skillUsed),
+    signal_used: String(res.skillUsage.signal ?? false), ponytail_used: String(res.skillUsage.ponytail ?? false),
+    tokens: String(res.tokens), cost_usd: String(res.costUsd), discarded_cost_usd: String(res.discardedCostUsd),
+    attempts: String(res.attempts), exception_type: res.exceptionType,
     wall: String(res.wallSec), task_ref: res.taskRef, started: startedAt,
     skill_sha: res.skillSha || skillsInfo?.sourceSha || "", skill_source: res.skillSource,
   });

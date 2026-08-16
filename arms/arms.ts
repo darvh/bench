@@ -147,21 +147,31 @@ export function armSkillNames(arm: ArmName): string[] {
   return names[arm] ?? [];
 }
 
+// Pinned skill commits for the study. Exact SHAs, not branch names — a
+// future push to main must not change what a given study measured. Bump these
+// deliberately and record the new SHA in the run's provenance.
+export const SKILL_PINS: Record<string, string> = {
+  signal: "364f8b350c8b11234ce16cb81835d4bf4c40d47a",
+  ponytail: "2ed6c52c9d7e5e56942508591085fd45dea277d3",
+  caveman: "c72984e4392c7a154e55c11dbf445f01ce5c35d4",
+};
+
 // Remote git skill sources for the same arms: harbor resolves org/name or a
-// tree URL, sparse-checkouts into cache, and mounts the skill dir.
+// tree URL, sparse-checkouts into cache, and mounts the skill dir. Skills with
+// a pin in SKILL_PINS resolve from that exact commit; unpinned ones use `ref`.
 export function armSkillRefs(arm: ArmName, ref = "main"): string[] {
   // each skill resolved from its published git repo, pinned to its subdir
   const refs: Record<string, string[]> = {
-    signal: [`https://github.com/darvh/signal/tree/${ref}/signal`],
-    caveman: [`https://github.com/JuliusBrussee/caveman/tree/main/skills/caveman`],
-    ponytail: [`https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`],
+    signal: [`https://github.com/darvh/signal/tree/${SKILL_PINS.signal ?? ref}/signal`],
+    caveman: [`https://github.com/JuliusBrussee/caveman/tree/${SKILL_PINS.caveman ?? "main"}/skills/caveman`],
+    ponytail: [`https://github.com/DietrichGebert/ponytail/tree/${SKILL_PINS.ponytail ?? "main"}/skills/ponytail`],
     "signal+ponytail": [
-      `https://github.com/darvh/signal/tree/${ref}/signal`,
-      `https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`,
+      `https://github.com/darvh/signal/tree/${SKILL_PINS.signal ?? ref}/signal`,
+      `https://github.com/DietrichGebert/ponytail/tree/${SKILL_PINS.ponytail ?? "main"}/skills/ponytail`,
     ],
     "caveman+ponytail": [
-      `https://github.com/JuliusBrussee/caveman/tree/main/skills/caveman`,
-      `https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail`,
+      `https://github.com/JuliusBrussee/caveman/tree/${SKILL_PINS.caveman ?? "main"}/skills/caveman`,
+      `https://github.com/DietrichGebert/ponytail/tree/${SKILL_PINS.ponytail ?? "main"}/skills/ponytail`,
     ],
   };
   return refs[arm] ?? [];
