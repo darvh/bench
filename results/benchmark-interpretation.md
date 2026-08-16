@@ -8,7 +8,7 @@ What the numbers mean, how to read the charts, and what the data actually shows.
   - **Low**: `django__django-11099` — one-file validator tweak
   - **Medium**: `astropy__astropy-13977` — real cross-file change
   - **High**: `sympy__sympy-13878` — deep library fix (CDF distribution code)
-- **Arms**: `naive` (no skill) · `signal` · `ponytail` · `signal+ponytail` (both skills)
+- **Arms**: `no-skill` (no skill) · `signal` · `ponytail` · `signal+ponytail` (both skills)
 - **Mode**: always-on (skill content injected via AGENTS.md MUST directive — the skill is guaranteed present)
 - **Reps**: 2 per arm per task; 24 cells total; every cell `completion=normal`
 - **Model**: opencode-go `deepseek-v4-flash`, pricing fixed to provider-reported rates
@@ -16,7 +16,7 @@ What the numbers mean, how to read the charts, and what the data actually shows.
 ## Charts
 
 - `skill-cost.png` — median cost per cell by arm and difficulty (log scale)
-- `skill-token-ratio.png` — tokens vs naive baseline (lower is better)
+- `skill-token-ratio.png` — tokens vs no-skill baseline (lower is better)
 - `skill-pass-rate.png` — correctness (saturated at ~100%)
 
 ## What each chart shows
@@ -27,23 +27,23 @@ What the numbers mean, how to read the charts, and what the data actually shows.
 - Bar value = median USD across reps for that arm at that difficulty.
 - **Read it as**: how much money the skill costs/ saves at each difficulty.
 
-### `skill-token-ratio.png` — token efficiency vs naive
+### `skill-token-ratio.png` — token efficiency vs no-skill
 
-- Each bar = `median tokens(arm) / median tokens(naive)` at that tier.
-- The dashed line at **1.0x = naive** (baseline).
+- Each bar = `median tokens(arm) / median tokens(no-skill)` at that tier.
+- The dashed line at **1.0x = no-skill** (baseline).
 - Below the line = the skill used fewer tokens than no-skill; above = it used more.
 - **Read it as**: the skill's token leverage (or tax) at each difficulty.
 
 ## The objective findings
 
 1. **Signal's value scales with difficulty.**
-   - High tier: 0.20x naive (2.01M vs 10.25M tokens), cost $0.019 vs $0.058 — **~3x cheaper, ~5x fewer tokens, same pass rate (2/2)**.
-   - Medium tier: 0.67x tokens, still cheaper than naive.
+   - High tier: 0.20x no-skill (2.01M vs 10.25M tokens), cost $0.019 vs $0.058 — **~3x cheaper, ~5x fewer tokens, same pass rate (2/2)**.
+   - Medium tier: 0.67x tokens, still cheaper than no-skill.
    - Low tier: 2.33x tokens — pure overhead, no benefit.
 
-2. **Skills are overhead on easy tasks.** All three skill arms cost 2.3–3.7x naive's tokens on the Low task with identical outcome (everyone passes). On trivial work the skill's reading + following is wasted motion.
+2. **Skills are overhead on easy tasks.** All three skill arms cost 2.3–3.7x no-skill's tokens on the Low task with identical outcome (everyone passes). On trivial work the skill's reading + following is wasted motion.
 
-3. **The pair wins mid-tier, loses high-tier.** `signal+ponytail` is cheapest on Medium (0.31x naive, $0.0086) — signal scopes, ponytail minimizes. But on High it degrades to 0.82x (grinds like ponytail under the heavy test loop), erasing the pair advantage.
+3. **The pair wins mid-tier, loses high-tier.** `signal+ponytail` is cheapest on Medium (0.31x no-skill, $0.0086) — signal scopes, ponytail minimizes. But on High it degrades to 0.82x (grinds like ponytail under the heavy test loop), erasing the pair advantage.
 
 4. **Ponytail alone is the weakest skill.** Only 0.55x on High, and it grinds longest (largest wall times, most stalls) — minimalism without a verification gate disperses effort across files instead of converging.
 

@@ -9,7 +9,7 @@ efficiency or correctness vs a no-skill baseline?
   stratum (gold-patch LOC: low <7, med 7-13, high ≥14), 9 distinct repos,
   none used to develop any skill. Selection recorded before running in
   `study-selection.md`.
-- **Conditions**: `no-skill` (naive), `signal`, `ponytail` — always-on (skill
+- **Conditions**: `no-skill` (no-skill), `signal`, `ponytail` — always-on (skill
   injected via AGENTS.md MUST directive).
 - **Cells**: 9 × 3 × 4 reps = **108**, task-major order, within-task shuffle
   seed **42**.
@@ -28,17 +28,17 @@ efficiency or correctness vs a no-skill baseline?
 
 ### Efficiency (per-task median tokens, then median across tasks)
 
-| arm | median tokens | token ratio vs naive | beats naive |
+| arm | median tokens | token ratio vs no-skill | beats no-skill |
 |-----|---------------|----------------------|-------------|
-| naive | 0.703M | 1.00x | — |
+| no-skill | 0.703M | 1.00x | — |
 | **signal** | **0.534M** | **0.53x** | 6/9 tasks |
 | **ponytail** | **0.402M** | **0.63x** | 7/9 tasks |
 
 ### Cost (per-task median cost, then median; plus totals)
 
-| arm | median cell cost | total (108 cells / 36 per arm) | cost ratio vs naive |
+| arm | median cell cost | total (108 cells / 36 per arm) | cost ratio vs no-skill |
 |-----|------------------|-------------------------------|---------------------|
-| naive | $0.0085 | $0.393 | 1.00x |
+| no-skill | $0.0085 | $0.393 | 1.00x |
 | signal | $0.0069 | $0.269 | **0.62x** (cheaper on 8/9) |
 | ponytail | $0.0054 | $0.300 | 0.66x (cheaper on 7/9) |
 
@@ -48,9 +48,9 @@ efficiency or correctness vs a no-skill baseline?
 |-----|-----------|
 | **signal** | **36/36** |
 | ponytail | 35/36 |
-| naive | 34/36 |
+| no-skill | 34/36 |
 
-### Signal's per-task token ratio vs naive (lowest = best)
+### Signal's per-task token ratio vs no-skill (lowest = best)
 
 | task | stratum | ratio |
 |------|---------|-------|
@@ -67,8 +67,8 @@ efficiency or correctness vs a no-skill baseline?
 ## Findings
 
 1. **Both skills improve efficiency over no-skill.** Median token ratio 0.53x
-   (signal) and 0.63x (ponytail); both cheaper than naive on the majority of
-   tasks. Signal total cost $0.269 vs naive $0.393 (−32%).
+   (signal) and 0.63x (ponytail); both cheaper than no-skill on the majority of
+   tasks. Signal total cost $0.269 vs no-skill $0.393 (−32%).
 
 2. **Signal is the only arm with a perfect pass rate** (36/36), and its
    efficiency wins are largest on the verbose/heavy tasks (scikit-learn 3.8x,
@@ -79,7 +79,7 @@ efficiency or correctness vs a no-skill baseline?
    easiest cells. The benefit is difficulty-dependent.
 
 4. **Ponytail is leanest per-cell** ($0.0054 median) but had the study's only
-   non-signal fails (naive 1, ponytail 1; signal 0), and its cost advantage
+   non-signal fails (no-skill 1, ponytail 1; signal 0), and its cost advantage
    over signal shrinks once pass-rate is held constant (cheaper total only on
    7/9, and it loses requests/pytest outright).
 
@@ -89,7 +89,7 @@ efficiency or correctness vs a no-skill baseline?
 ## Charts
 
 - `study-tokens.png` — per-task median tokens (log), all three arms
-- `study-token-ratio.png` — tokens vs naive per task (dashed line = 1.0x)
+- `study-token-ratio.png` — tokens vs no-skill per task (dashed line = 1.0x)
 - `study-pass-rate.png` — pass rate by task and arm
 
 ## Caveats

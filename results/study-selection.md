@@ -35,7 +35,7 @@ used to refine the Signal skill. All are unseen.
 
 | condition | mode | notes |
 |-----------|------|-------|
-| no-skill | baseline | `naive` arm (control) |
+| no-skill | baseline | no-skill arm (control) |
 | signal | always-on | efficacy ceiling |
 | ponytail | always-on | active-efficiency competitor |
 

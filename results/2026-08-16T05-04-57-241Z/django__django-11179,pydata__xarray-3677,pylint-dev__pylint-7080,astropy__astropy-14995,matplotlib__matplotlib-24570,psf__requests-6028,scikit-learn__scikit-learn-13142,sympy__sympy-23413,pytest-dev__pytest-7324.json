@@ -60,7 +60,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "django__django-11179",
     "rep": "1",
     "verdict": "pass",
@@ -80,7 +80,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "django__django-11179",
     "rep": "3",
     "verdict": "pass",
@@ -120,7 +120,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "django__django-11179",
     "rep": "4",
     "verdict": "pass",
@@ -140,7 +140,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "django__django-11179",
     "rep": "2",
     "verdict": "pass",
@@ -280,7 +280,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pydata__xarray-3677",
     "rep": "1",
     "verdict": "pass",
@@ -320,7 +320,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pydata__xarray-3677",
     "rep": "3",
     "verdict": "fail",
@@ -420,7 +420,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pydata__xarray-3677",
     "rep": "4",
     "verdict": "pass",
@@ -440,7 +440,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pydata__xarray-3677",
     "rep": "2",
     "verdict": "pass",
@@ -520,7 +520,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pylint-dev__pylint-7080",
     "rep": "3",
     "verdict": "pass",
@@ -540,7 +540,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pylint-dev__pylint-7080",
     "rep": "4",
     "verdict": "pass",
@@ -560,7 +560,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pylint-dev__pylint-7080",
     "rep": "1",
     "verdict": "pass",
@@ -600,7 +600,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pylint-dev__pylint-7080",
     "rep": "2",
     "verdict": "pass",
@@ -660,7 +660,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "astropy__astropy-14995",
     "rep": "3",
     "verdict": "pass",
@@ -700,7 +700,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "astropy__astropy-14995",
     "rep": "1",
     "verdict": "pass",
@@ -840,7 +840,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "astropy__astropy-14995",
     "rep": "4",
     "verdict": "pass",
@@ -880,7 +880,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "astropy__astropy-14995",
     "rep": "2",
     "verdict": "pass",
@@ -980,7 +980,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "matplotlib__matplotlib-24570",
     "rep": "1",
     "verdict": "pass",
@@ -1000,7 +1000,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "matplotlib__matplotlib-24570",
     "rep": "3",
     "verdict": "pass",
@@ -1100,7 +1100,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "matplotlib__matplotlib-24570",
     "rep": "2",
     "verdict": "pass",
@@ -1140,7 +1140,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "matplotlib__matplotlib-24570",
     "rep": "4",
     "verdict": "pass",
@@ -1160,7 +1160,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "psf__requests-6028",
     "rep": "1",
     "verdict": "pass",
@@ -1220,7 +1220,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "psf__requests-6028",
     "rep": "3",
     "verdict": "pass",
@@ -1280,7 +1280,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "psf__requests-6028",
     "rep": "4",
     "verdict": "pass",
@@ -1320,7 +1320,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "psf__requests-6028",
     "rep": "2",
     "verdict": "pass",
@@ -1420,7 +1420,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "scikit-learn__scikit-learn-13142",
     "rep": "3",
     "verdict": "pass",
@@ -1480,7 +1480,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "scikit-learn__scikit-learn-13142",
     "rep": "1",
     "verdict": "pass",
@@ -1560,7 +1560,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "scikit-learn__scikit-learn-13142",
     "rep": "4",
     "verdict": "pass",
@@ -1620,7 +1620,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "scikit-learn__scikit-learn-13142",
     "rep": "2",
     "verdict": "pass",
@@ -1720,7 +1720,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "sympy__sympy-23413",
     "rep": "3",
     "verdict": "pass",
@@ -1740,7 +1740,7 @@
     "skill_source": ""
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "sympy__sympy-23413",
     "rep": "1",
     "verdict": "pass",
@@ -1820,7 +1820,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "sympy__sympy-23413",
     "rep": "4",
     "verdict": "pass",
@@ -1860,7 +1860,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pytest-dev__pytest-7324",
     "rep": "3",
     "verdict": "fail",
@@ -1920,7 +1920,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pytest-dev__pytest-7324",
     "rep": "1",
     "verdict": "pass",
@@ -1960,7 +1960,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "sympy__sympy-23413",
     "rep": "2",
     "verdict": "pass",
@@ -2040,7 +2040,7 @@
     "skill_source": "https://github.com/DietrichGebert/ponytail"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pytest-dev__pytest-7324",
     "rep": "4",
     "verdict": "pass",
@@ -2080,7 +2080,7 @@
     "skill_source": "https://github.com/darvh/signal"
   },
   {
-    "arm": "naive",
+    "arm": "no-skill",
     "task": "pytest-dev__pytest-7324",
     "rep": "2",
     "verdict": "pass",
