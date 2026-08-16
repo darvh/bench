@@ -68,8 +68,10 @@ Per-run monitor state = one file per run (no shared-state races).
 ## Metrics per cell
 
 `verdict` (official reward), `skill_used` (proof from the session transcript
-that the skill was actually loaded), `tokens`, `cost_usd` (at the DeepSeek V4
-Flash price schedule), `wall`. Sessions (trajectory + results) land in
+that the skill was actually loaded), `tokens`, `cost_usd` (DeepSeek V4 Flash
+list price), `provider_cost_usd` (the actual provider bill when recorded),
+`discarded_cost_usd` (retry waste), `wall`. The confirmatory study ran during
+a 50% OpenCode Go promotion. Sessions (trajectory + results) land in
 `results/<runId>/sessions/`; live streaming during a run:
 `results/<runId>/live/<cell>/opencode.txt`.
 

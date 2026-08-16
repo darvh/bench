@@ -36,13 +36,16 @@ efficiency or correctness vs a no-skill baseline?
 | **signal** | **0.534M** | **0.53x** | 6/9 tasks |
 | **ponytail** | **0.402M** | **0.63x** | 7/9 tasks |
 
-### Cost (per-task median cost, then median; plus totals)
+### Cost (per-task median cost, then median; list price)
 
-| arm | median cell cost | total (108 cells / 36 per arm) | cost ratio vs no-skill |
-|-----|------------------|-------------------------------|---------------------|
-| no-skill | $0.0085 | $0.393 | 1.00x |
-| signal | $0.0069 | $0.269 | **0.62x** (cheaper on 8/9) |
-| ponytail | $0.0054 | $0.300 | 0.66x (cheaper on 7/9) |
+| arm | median cell cost | scored cells | discarded retries | all-in total | cost ratio vs no-skill |
+|-----|------------------|-------------|-------------------|-------------|------------------------|
+| no-skill | $0.0085 | $0.393 | $0.0035 | $0.396 | 1.00x |
+| signal | $0.0069 | $0.269 | $0.0008 | $0.270 | **0.62x** (cheaper on 8/9) |
+| ponytail | $0.0054 | $0.300 | $0 | $0.300 | 0.66x (cheaper on 7/9) |
+
+At the 50% promotional rate, the all-in provider bills were $0.198 for
+no-skill, $0.135 for signal, and $0.150 for ponytail.
 
 ### Correctness
 
@@ -70,7 +73,8 @@ efficiency or correctness vs a no-skill baseline?
 
 1. **Both skills improve efficiency over no-skill.** Median token ratio 0.53x
    (signal) and 0.63x (ponytail); both cheaper than no-skill on the majority of
-   tasks. Signal total cost $0.269 vs no-skill $0.393 (−32%).
+   tasks. Including discarded retries, signal cost $0.270 vs no-skill $0.396
+   at list price (−32%).
 
 2. **Signal is the only arm with a perfect pass rate** (36/36), and its
    efficiency wins are largest on the verbose/heavy tasks (scikit-learn 3.8x,
