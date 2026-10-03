@@ -59,10 +59,43 @@ const CAP_OUTPUT_EXT = path.join(HERE, "pi-extensions", "capoutput.ts");
 const agPath = flag("--ag-path", datasetName.startsWith("swe-bench") ? "/testbed/AGENTS.md" : "/app/AGENTS.md");
 const stallTimeoutSec = Number(flag("--stall-timeout-sec", "300"));
 const out = flag("--out", path.join(REPO, "results"));
+
+// Network guard. The dataset images allow public egress; agents used it to
+// clone upstream repos and pull the actual fix (pylint PR #7080, pytest
+// commit 1deaa7434) in the 2026-08-16 run — see results/contamination-audit.md.
+// Every dataset task is materialized locally and its [agent] phase is pinned to
+// an allowlist: the model gateway only, nothing else. The environment baseline
+// stays public so agent install (npm) still works. `network_used` per row is
+// the canary that the guard held.
+const AGENT_ALLOWED_HOSTS = ["opencode.ai", "*.opencode.ai", "models.dev"];
+
+async function materializeTask(task: string): Promise<void> {
+  const pkg = datasetName.split("/")[0];
+  const root = path.join(JOBS_RUN, "tasks");
+  const dest = path.join(root, task);
+  const toml = path.join(dest, "task.toml");
+  if (await fs.access(toml).then(() => true).catch(() => false)) return;
+  await fs.mkdir(root, { recursive: true });
+  const dl = Bun.spawn({
+    cmd: ["harbor", "download", `${pkg}/${task}`, "--export", "--overwrite"],
+    cwd: root,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  const code = await dl.exited;
+  if (code !== 0) throw new Error(`harbor download ${pkg}/${task} failed: ${(await new Response(dl.stderr).text()).trim()}`);
+  let text = await fs.readFile(toml, "utf8");
+  if (!/^\[agent\]$/m.test(text)) throw new Error(`task.toml has no [agent] section: ${toml}`);
+  const hosts = AGENT_ALLOWED_HOSTS.map((h) => JSON.stringify(h)).join(", ");
+  text = text.replace(/^\[agent\]$/m, `[agent]\nnetwork_mode = "allowlist"\nallowed_hosts = [${hosts}]`);
+  await fs.writeFile(toml, text);
+}
+
 // every invocation gets its own folder under jobs + results — nothing overwrites
 const runId = flag("--run-id", new Date().toISOString().replace(/[:.]/g, "-"));
 const JOBS_RUN = path.join(JOBS, runId);
 const outRun = path.join(out, runId);
+let resolvedTaskDir: string | undefined = taskDir || undefined;
 
 function key(): string {
   const auth = JSON.parse(readFileSync(path.join(homedir(), ".local", "share", "opencode", "auth.json"), "utf8"));
@@ -189,7 +222,7 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
       ...(capOutput ? { capOutput: CAP_OUTPUT_EXT } : {}),
       datasetName,
       taskPrefix,
-      taskDir: taskDir || undefined,
+      taskDir: resolvedTaskDir,
       agentTimeoutMult,
       stallTimeoutSec,
       archiveRoot: ARCHIVE,
@@ -209,6 +242,7 @@ async function runOne(c: { arm: ArmName; task: string; rep: number }): Promise<v
     attempts: String(res.attempts), exception_type: res.exceptionType,
     wall: String(res.wallSec), task_ref: res.taskRef, started: startedAt,
     skill_sha: res.skillSha || skillsInfo?.sourceSha || "", skill_source: res.skillSource,
+    network_used: String(res.networkUsed),
   });
   console.log(`  ${c.arm.padEnd(12)} ${c.task.padEnd(20)} r${c.rep} verdict=${res.verdict} completion=${res.completion} skill_used=${res.skillUsed} ${res.tokens} tok $${res.costUsd} ${res.wallSec}s`);
 }
@@ -217,6 +251,11 @@ let next = 0;
 const worker = async (): Promise<void> => {
   while (next < cells.length) await runOne(cells[next++]);
 };
+if (!dry && !resolvedTaskDir) {
+  for (const task of taskList) await materializeTask(task);
+  resolvedTaskDir = path.join(JOBS_RUN, "tasks");
+  console.log(`net guard — dataset tasks materialized with [agent] allowlist: ${AGENT_ALLOWED_HOSTS.join(", ")}`);
+}
 await Promise.all(Array.from({ length: Math.min(parallel, cells.length) }, worker));
 
 await fs.mkdir(outRun, { recursive: true });
@@ -244,6 +283,7 @@ const provenance = {
   skillSource: "github.com/darvh/signal (install.sh distribution path)",
   skillSha: rows[0]?.skill_sha ?? "",
   pricePer1M: { input_miss: PRICE_INPUT_MISS_PER_1M, input_hit: PRICE_INPUT_HIT_PER_1M, output: PRICE_OUTPUT_PER_1M },
+  agentNetworkPolicy: { mode: "allowlist", allowedHosts: AGENT_ALLOWED_HOSTS, baseline: "public (agent install only)" },
   cells: rows.length,
   resultsFile: path.basename(file),
 };

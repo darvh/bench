@@ -27,6 +27,24 @@ doesn't say.
   Mac = swap death + VS Code crash. Parallel cells beyond 3 on this box
   relocked it multiple times. `vmType: vz` + `rosetta: true` are on.
 
+## Validity — public egress contaminates SWE-bench
+
+- **The dataset images allow network during the agent phase, and agents use
+  it.** The 2026-08-16 confirmatory run had 37/108 cells fetch external URLs:
+  clones of the upstream repos, fix PR diffs/commits (pylint PR #7080, pytest
+  commit `1deaa7434`, requests PR #6028), issue searches, version docs. All 37
+  passed. The study doc originally claimed no external access was observed —
+  wrong; always audit the transcripts (`results/contamination-audit.md`).
+- **Fix**: the harness now materializes every dataset task
+  (`harbor download --export`) and patches `[agent] network_mode = "allowlist"`
+  with the model gateway only (`opencode.ai`, `*.opencode.ai`, `models.dev`).
+  The environment baseline stays public so agent install (npm) still works.
+  Each row records `network_used` from the transcript as the guard canary.
+  Validated with a real cell (django-11179: pass, 63,969 tok, 196s; egress
+  sidecar built and the model gateway stayed reachable).
+- **Lesson**: a `verdict=pass` says nothing about *how*; scan transcripts for
+  network/gold access before publishing any reward comparison.
+
 ## Bugs found (each cost real hours)
 
 1. **Harbor's opencode agent nests jobs** as `jobs_dir/<job_name>/<trial>/`.

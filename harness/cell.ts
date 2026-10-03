@@ -39,6 +39,7 @@ export interface CellResult {
   attempts: number; // attempts consumed incl. retries (1 = clean)
   discardedCostUsd: number; // tokens/cost burned by stalled/immediate-failed attempts that were discarded
   exceptionType: string; // trial exception_type when completion != normal
+  networkUsed: boolean; // canary: agent transcript contains network commands (should be false under the allowlist)
 }
 
 export interface CellOpts {
@@ -116,7 +117,7 @@ export async function runCell(o: CellOpts): Promise<CellResult> {
     discardedCostUsd += res.costUsd;
     console.log(`[cell] ${o.task} (${o.id}): ${res.stalled ? "stalled" : "immediate failure"} attempt ${attempt}/${maxAttempts} — retrying`);
   }
-  return { ...last!, ok: false, verdict: "error", tokens: 0, costUsd: 0, attempts: maxAttempts, discardedCostUsd };
+  return { ...last!, ok: false, verdict: "error", tokens: 0, costUsd: 0, attempts: maxAttempts, discardedCostUsd, networkUsed: false };
 }
 
 async function runAttempt(o: CellOpts): Promise<CellResult> {
@@ -239,7 +240,26 @@ async function runAttempt(o: CellOpts): Promise<CellResult> {
   const taskRef = await jobTaskRef(o.jobsDir);
   const prov = await skillProvenance(o.jobsDir);
   const exceptionType = await trialExceptionType(o.jobsDir);
-  return { ok: code === 0, verdict, completion, tokens, costUsd, skillUsed, skillUsage, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source, stalled, attempts: 1, discardedCostUsd: 0, exceptionType };
+  const networkUsed = await transcriptNetworkUse(o.jobsDir, transcriptName(o.agent));
+  return { ok: code === 0, verdict, completion, tokens, costUsd, skillUsed, skillUsage, taskRef, wallSec, skillSha: prov.sha, skillSource: prov.source, stalled, attempts: 1, discardedCostUsd: 0, exceptionType, networkUsed };
+}
+
+// Network canary. The task's [agent] phase is pinned to an allowlist (model
+// gateway only) by run.ts, so outbound commands should fail. The egress sidecar
+// rejects blocked TCP and DNS, which leaves a resolution/connection error in
+// the transcript; a network command with no such error means the guard did not
+// hold — surface it in the result row instead of trusting the environment.
+const NETWORK_COMMAND = /git clone|git fetch|git ls-remote|curl\s|wget\s|pip install|npm i |api\.github\.com|raw\.githubusercontent\.com/;
+const EGRESS_BLOCKED = /could not resolve|name or service not known|temporary failure in name resolution|connection refused|connection timed out|failed to connect|network is unreachable|operation timed out/i;
+
+async function transcriptNetworkUse(jobsDir: string, transcriptFile: string): Promise<boolean> {
+  for (const dir of await trialDirs(jobsDir)) {
+    try {
+      const text = await fs.readFile(path.join(dir, "agent", transcriptFile), "utf8");
+      if (NETWORK_COMMAND.test(text) && !EGRESS_BLOCKED.test(text)) return true;
+    } catch {}
+  }
+  return false;
 }
 
 // ---- result.json discovery ----

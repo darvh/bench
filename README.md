@@ -64,6 +64,10 @@ bun run harness/monitor-agent.ts            # watchdog: auto-stop stalls
 Security: jobs + keys live in the OS cache; the apiKey is scrubbed in place
 after every run; results in `results/<runId>/`; nothing is ever uploaded.
 Per-run monitor state = one file per run (no shared-state races).
+Network: dataset tasks are materialized locally and the agent phase is pinned
+to a model-gateway allowlist (`opencode.ai`, `*.opencode.ai`, `models.dev`), so
+the agent cannot fetch upstream fixes; agent install keeps the public baseline.
+Every row carries `network_used` (transcript canary, must be `false`).
 
 ## Metrics per cell
 

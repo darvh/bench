@@ -55,6 +55,31 @@ no-skill, $0.135 for signal, and $0.150 for ponytail.
 | ponytail | 35/36 |
 | no-skill | 34/36 |
 
+### Contamination (audited 2026-10-03)
+
+The environment allowed public egress during the agent phase, and **37/108
+cells executed commands that fetched external URLs** — GitHub clones/curls, fix
+PR diffs, fix commits, upstream sources, issue searches, version docs; in eight
+cells the agent retrieved a fix artifact itself (e.g. pylint PR #7080 diff,
+pytest fix commit `1deaa7434`, requests PR #6028 diff, pytest `main` source).
+All 37 contaminated cells passed. The harness now pins the agent phase to a
+model-gateway allowlist and records `network_used` per cell. Full list and
+evidence: `results/contamination-audit.md`.
+
+Clean-only (contaminated cells excluded; small n):
+
+| arm | clean pass rate | clean token ratio vs no-skill |
+|-----|-----------------|-------------------------------|
+| no-skill | 23/25 | 1.00x |
+| **signal** | **22/22** | 0.75x |
+| **ponytail** | 23/24 | **0.46x** |
+
+The efficiency/cost tables above include contaminated cells and need a clean
+rerun before they are treated as confirmatory. The clean-only ordering flips
+the token-ratio headline (ponytail 0.46x vs signal 0.75x) while signal keeps the
+perfect pass rate; some tasks have a single clean cell after exclusion, so treat
+this as a sensitivity, not a result.
+
 ### Signal's per-task token ratio vs no-skill (lowest = best)
 
 | task | stratum | ratio |
@@ -70,6 +95,10 @@ no-skill, $0.135 for signal, and $0.150 for ponytail.
 | matplotlib-24570 | med | 1.13x |
 
 ## Findings
+
+Findings 1–3 quote the contaminated efficiency/cost tables above; the clean-only
+sensitivity in Contamination flips the token-ratio ranking (ponytail 0.46x vs
+signal 0.75x) and must be re-established with a clean rerun.
 
 1. **Both skills improve efficiency over no-skill.** Median token ratio 0.53x
    (signal) and 0.63x (ponytail); both cheaper than no-skill on the majority of
@@ -105,5 +134,5 @@ no-skill, $0.135 for signal, and $0.150 for ponytail.
   skill; that run is separate.
 - n=4 per task per arm; medians reported. Per-cell token variance within an
   arm is 2-5x on some tasks.
-- External web access was present in the environment but was not observed
-  used by any agent in the run transcripts.
+- **External web access was present and used** — see Contamination above. The
+  agent phase is now allowlisted to the model gateway; rerun required.
